@@ -1,78 +1,127 @@
-import { Wifi, Zap } from "lucide-react";
+"use client";
 
-import { Button } from "@/components/ui/button";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Copy,
+  Plus,
+  RotateCw,
+  Share,
+} from "lucide-react";
+import React from "react";
 
-interface Hero115Props {
-  icon?: React.ReactNode;
-  heading: string;
-  description: string;
-  button: {
-    text: string;
-    icon?: React.ReactNode;
-    url: string;
-  };
-  trustText?: string;
-  imageSrc?: string;
-  imageAlt?: string;
-}
+import { cn } from "@/lib/utils";
 
-const Hero115 = ({
-  icon = <Wifi className="size-6" />,
-  heading = "Blocks built with Shadcn & Tailwind",
-  description = "Finely crafted components built with React, Tailwind and Shadcn UI. Developers can copy and paste these blocks directly into their project.",
-  button = {
-    text: "Discover Features",
-    icon: <Zap className="ml-2 size-4" />,
-    url: "https://www.shadcnblocks.com",
-  },
-  trustText = "Trusted by 25.000+ Businesses Worldwide",
-  imageSrc = "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-1.svg",
-  imageAlt = "placeholder",
-}: Hero115Props) => {
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+
+const Hero206 = () => {
   return (
-    <section className="overflow-hidden py-32">
-      <div className="container">
-        <div className="flex flex-col gap-5">
-          <div className="relative flex flex-col gap-5">
-            <div
-              style={{
-                transform: "translate(-50%, -50%)",
-              }}
-              className="absolute top-1/2 left-1/2 -z-10 mx-auto size-[800px] rounded-full border [mask-image:linear-gradient(to_top,transparent,transparent,white,white,white,transparent,transparent)] p-16 md:size-[1300px] md:p-32"
-            >
-              <div className="size-full rounded-full border p-16 md:p-32">
-                <div className="size-full rounded-full border"></div>
-              </div>
-            </div>
-            <span className="mx-auto flex size-16 items-center justify-center rounded-full border md:size-20">
-              {icon}
-            </span>
-            <h2 className="mx-auto max-w-5xl text-center text-3xl font-medium text-balance md:text-6xl">
-              {heading}
-            </h2>
-            <p className="mx-auto max-w-3xl text-center text-muted-foreground md:text-lg">
-              {description}
-            </p>
-            <div className="flex flex-col items-center justify-center gap-3 pt-3 pb-12">
-              <Button size="lg" asChild>
-                <a href={button.url}>
-                  {button.text} {button.icon}
-                </a>
-              </Button>
-              {trustText && (
-                <div className="text-xs text-muted-foreground">{trustText}</div>
-              )}
-            </div>
-          </div>
-          <img
-            src={imageSrc}
-            alt={imageAlt}
-            className="mx-auto h-full max-h-[524px] w-full max-w-5xl rounded-2xl object-cover"
+    <section className="bg-background">
+      <div className="container relative py-32">
+        <header className="mx-auto max-w-3xl text-center">
+          <h1 className="font-anton text-foreground text-5xl font-semibold tracking-tight md:text-7xl">
+            Shadcn Blocks <br /> Just Copy/Paste.
+          </h1>
+          <p className="text-muted-foreground my-7 max-w-3xl tracking-tight md:text-xl">
+            Lorem ipsum dolor sit amet consectetur adipiasicing elit.Lorem ipsum
+            dolor sit amet consectetur Lorem
+          </p>
+        </header>
+
+        <Badge
+          variant="outline"
+          className="mx-auto mt-10 flex w-fit cursor-pointer items-center justify-center rounded-full border py-1 pl-2 pr-3 font-normal transition-all ease-in-out hover:gap-3"
+        >
+          <Avatar className="relative -mr-5 overflow-hidden rounded-full border md:size-10">
+            <AvatarImage src="https://deifkwefumgah.cloudfront.net/shadcnblocks/block/avatar-2.webp" alt="" />
+            <AvatarFallback>AB</AvatarFallback>
+          </Avatar>
+          <Avatar className="relative -mr-5 overflow-hidden rounded-full border md:size-10">
+            <AvatarImage src="https://deifkwefumgah.cloudfront.net/shadcnblocks/block/avatar-5.webp" alt="" />
+            <AvatarFallback>AB</AvatarFallback>
+          </Avatar>
+          <Avatar className="relative -mr-5 overflow-hidden rounded-full border md:size-10">
+            <AvatarImage src="https://deifkwefumgah.cloudfront.net/shadcnblocks/block/avatar-6.webp" alt="" />
+            <AvatarFallback>AB</AvatarFallback>
+          </Avatar>
+          <p className="ml-6 capitalize tracking-tight md:text-lg">
+            {" "}
+            Trusted by <span className="text-foreground font-bold">
+              10k+
+            </span>{" "}
+            users.
+          </p>
+        </Badge>
+
+        <div className="relative mt-12 flex h-full w-full flex-col items-center justify-center">
+          <BrowserMockup
+            className="w-full"
+            url="https://shadcnblocks.com/block/hero206"
+            DahboardUrlDesktop="https://deifkwefumgah.cloudfront.net/shadcnblocks/block/dashboard/dashboard-1.png"
+            DahboardUrlMobile="https://deifkwefumgah.cloudfront.net/shadcnblocks/block/dashboard/dashboard-mobile-1.png"
           />
+          <div className="bg-linear-to-t absolute bottom-0 h-2/3 w-full from-white to-transparent" />
         </div>
       </div>
     </section>
   );
 };
 
-export { Hero115 };
+export { Hero206 };
+
+const BrowserMockup = ({
+  className = "",
+  url = "https://shadcnblocks.com/block/hero206",
+  DahboardUrlDesktop = "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/dashboard/dashboard-1.png",
+  DahboardUrlMobile = "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/dashboard/dashboard-mobile-1.png",
+}) => (
+  <div
+    className={cn(
+      "rounded-4xl relative w-full overflow-hidden border",
+      className,
+    )}
+  >
+    <div className="bg-muted lg:gap-25 flex items-center justify-between gap-10 px-8 py-4">
+      <div className="flex items-center gap-2">
+        <div className="size-3 rounded-full bg-red-500" />
+        <div className="size-3 rounded-full bg-yellow-500" />
+        <div className="size-3 rounded-full bg-green-500" />
+        <div className="ml-6 hidden items-center gap-2 opacity-40 lg:flex">
+          <ChevronLeft className="size-5" />
+          <ChevronRight className="size-5" />
+        </div>
+      </div>
+      <div className="flex w-full items-center justify-center">
+        <p className="bg-background relative hidden w-full rounded-full px-4 py-1 text-center text-sm tracking-tight md:block">
+          {url}
+          <RotateCw className="absolute right-3 top-2 size-3.5" />
+        </p>
+      </div>
+
+      <div className="flex items-center gap-4 opacity-40">
+        <Share className="size-4" />
+        <Plus className="size-4" />
+        <Copy className="size-4" />
+      </div>
+    </div>
+
+    <div className="relative w-full">
+      <img
+        src={DahboardUrlDesktop}
+        alt=""
+        className="object-cove hidden aspect-video h-full w-full object-top md:block"
+      />
+      <img
+        src={DahboardUrlMobile}
+        alt=""
+        className="block h-full w-full object-cover md:hidden"
+      />
+    </div>
+    <div className="bg-muted absolute bottom-0 z-10 flex w-full items-center justify-center py-3 md:hidden">
+      <p className="relative flex items-center gap-2 rounded-full px-8 py-1 text-center text-sm tracking-tight">
+        {url}
+      </p>
+    </div>
+  </div>
+);
