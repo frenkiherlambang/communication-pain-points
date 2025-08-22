@@ -1,7 +1,8 @@
 "use client";
 
-import { cn } from "/lib/utils";
+import { cn } from "@/lib/utils";
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 
 type Grid = {
   rows: number;
@@ -104,9 +105,10 @@ export const PixelImage = ({
             transitionDuration: `${pixelFadeInDuration}ms`,
           }}
         >
-          <img
+          <Image
             src={src}
             alt={`Pixel image piece ${index + 1}`}
+            fill
             className={cn(
               "z-1 object-cover rounded-[2.5rem]",
               grayscaleAnimation && (showColor ? "grayscale-0" : "grayscale"),

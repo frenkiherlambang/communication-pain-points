@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 
-import { cn } from "/lib/utils";
+import { cn } from "@/lib/utils";
 
 interface NeonColorsProps {
   firstColor: string;
@@ -64,7 +64,7 @@ interface NeonGradientCardProps {
    * */
   neonColors?: NeonColorsProps;
 
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export const NeonGradientCard: React.FC<NeonGradientCardProps> = ({

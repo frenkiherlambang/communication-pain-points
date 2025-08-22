@@ -44,9 +44,7 @@ const useTree = () => {
   return context;
 };
 
-interface TreeViewComponentProps extends React.HTMLAttributes<HTMLDivElement> {
-  // Additional props can be added here if needed
-}
+type TreeViewComponentProps = React.HTMLAttributes<HTMLDivElement>;
 
 type Direction = "rtl" | "ltr" | undefined;
 
@@ -203,10 +201,7 @@ const TreeIndicator = forwardRef<
 
 TreeIndicator.displayName = "TreeIndicator";
 
-interface FolderComponentProps
-  extends React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Item> {
-  // Additional props can be added here if needed
-}
+type FolderComponentProps = React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Item>;
 
 type FolderProps = {
   expandedItems?: string[];
@@ -229,7 +224,7 @@ const Folder = forwardRef<
       children,
       ...props
     },
-    _ref,
+    ref,
   ) => {
     const {
       direction,
@@ -301,7 +296,7 @@ const File = forwardRef<
     {
       value,
       className,
-      handleSelect: _handleSelect,
+      handleSelect,
       isSelectable = true,
       isSelect,
       fileIcon,
@@ -344,7 +339,7 @@ const CollapseButton = forwardRef<
     elements: TreeViewElement[];
     expandAll?: boolean;
   } & React.HTMLAttributes<HTMLButtonElement>
->(({ className: _className, elements, expandAll = false, children, ...props }, ref) => {
+>(({ elements, expandAll = false, children, ...props }, ref) => {
   const { expandedItems, setExpandedItems } = useTree();
 
   const expendAllTree = useCallback((elements: TreeViewElement[]) => {

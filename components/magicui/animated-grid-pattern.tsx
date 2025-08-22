@@ -42,12 +42,12 @@ export function AnimatedGridPattern({
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [squares, setSquares] = useState(() => generateSquares(numSquares));
 
-  function getPos() {
+  const getPos = useCallback(() => {
     return [
       Math.floor((Math.random() * dimensions.width) / width),
       Math.floor((Math.random() * dimensions.height) / height),
     ];
-  }
+  }, [dimensions.width, dimensions.height, width, height]);
 
   // Adjust the generateSquares function to return objects with an id, x, and y
   const generateSquares = useCallback((count: number) => {
@@ -55,7 +55,7 @@ export function AnimatedGridPattern({
       id: i,
       pos: getPos(),
     }));
-  }, [dimensions.width, dimensions.height, width, height]);
+  }, [getPos]);
 
   // Function to update a single square's position
   const updateSquarePosition = (id: number) => {
