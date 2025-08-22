@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { motion, useAnimation } from "motion/react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 interface ScratchToRevealProps {
   children: React.ReactNode;
@@ -88,7 +88,7 @@ export const ScratchToReveal: React.FC<ScratchToRevealProps> = ({
       document.removeEventListener("touchend", handleDocumentTouchEnd);
       document.removeEventListener("touchcancel", handleDocumentTouchEnd);
     };
-  }, [isScratching]);
+  }, [isScratching, minScratchPercentage, onComplete, checkCompletion]);
 
   const handleMouseDown = () => setIsScratching(true);
 
@@ -108,7 +108,7 @@ export const ScratchToReveal: React.FC<ScratchToRevealProps> = ({
     }
   };
 
-  const startAnimation = async () => {
+  const startAnimation = useCallback(async () => {
     await controls.start({
       scale: [1, 1.5, 1],
       rotate: [0, 10, -10, 10, -10, 0],
@@ -119,9 +119,9 @@ export const ScratchToReveal: React.FC<ScratchToRevealProps> = ({
     if (onComplete) {
       onComplete();
     }
-  };
+  }, [controls, onComplete]);
 
-  const checkCompletion = () => {
+  const checkCompletion = useCallback(() => {
     if (isComplete) return;
 
     const canvas = canvasRef.current;
@@ -144,7 +144,7 @@ export const ScratchToReveal: React.FC<ScratchToRevealProps> = ({
         startAnimation();
       }
     }
-  };
+  }, [isComplete, minScratchPercentage, startAnimation]);
 
   return (
     <motion.div

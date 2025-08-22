@@ -1,4 +1,5 @@
 import { Wifi, Zap } from "lucide-react";
+import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 
@@ -64,9 +65,11 @@ const Hero115 = ({
               )}
             </div>
           </div>
-          <img
+          <Image
             src={imageSrc}
             alt={imageAlt}
+            width={1200}
+            height={524}
             className="mx-auto h-full max-h-[524px] w-full max-w-5xl rounded-2xl object-cover"
           />
         </div>

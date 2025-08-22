@@ -1,4 +1,5 @@
 import { HandHelping, Users, Zap } from "lucide-react";
+import Image from "next/image";
 import React from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -52,9 +53,11 @@ const Hero45 = ({
           <h1 className="text-4xl font-semibold lg:text-5xl">{heading}</h1>
         </div>
         <div className="relative mx-auto max-w-5xl">
-          <img
+          <Image
             src={imageSrc}
             alt={imageAlt}
+            width={1200}
+            height={675}
             className="aspect-video max-h-[500px] w-full rounded-xl object-cover"
           />
           <div className="absolute inset-0 bg-linear-to-t from-background via-transparent to-transparent"></div>

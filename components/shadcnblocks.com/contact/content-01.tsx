@@ -7,6 +7,7 @@ import {
   ListChecks,
   RefreshCcw,
 } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
@@ -72,9 +73,11 @@ const Content1 = () => {
                 peculiar tale unfolded about a king who decided to tax the very
                 essence of joy itself - jokes and jest.
               </p>
-              <img
+              <Image
                 src="https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-1.svg"
                 alt="placeholder"
+                width={800}
+                height={450}
                 className="my-8 aspect-video w-full rounded-md object-cover"
               />
             </div>

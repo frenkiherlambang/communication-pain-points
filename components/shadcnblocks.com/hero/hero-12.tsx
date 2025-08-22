@@ -1,4 +1,5 @@
 import { ExternalLink } from "lucide-react";
+import Image from "next/image";
 
 import { cn } from "@/lib/utils";
 
@@ -8,9 +9,11 @@ const Hero12 = () => {
   return (
     <section className="relative overflow-hidden py-32">
       <div className="absolute inset-x-0 top-0 flex h-full w-full items-center justify-center opacity-100">
-        <img
+        <Image
           alt="background"
           src="https://deifkwefumgah.cloudfront.net/shadcnblocks/block/patterns/square-alt-grid.svg"
+          width={1200}
+          height={800}
           className="[mask-image:radial-gradient(75%_75%_at_center,white,transparent)] opacity-90"
         />
       </div>
@@ -18,9 +21,11 @@ const Hero12 = () => {
         <div className="mx-auto flex max-w-5xl flex-col items-center">
           <div className="flex flex-col items-center gap-6 text-center">
             <div className="rounded-xl bg-background/30 p-4 shadow-sm backdrop-blur-sm">
-              <img
+              <Image
                 src="https://deifkwefumgah.cloudfront.net/shadcnblocks/block/block-1.svg"
                 alt="logo"
+                width={64}
+                height={64}
                 className="h-16"
               />
             </div>
@@ -56,9 +61,11 @@ const Hero12 = () => {
                     "group flex aspect-square h-12 items-center justify-center p-0",
                   )}
                 >
-                  <img
+                  <Image
                     src="https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcn-ui-icon.svg"
                     alt="shadcn/ui logo"
+                    width={24}
+                    height={24}
                     className="h-6 saturate-0 transition-all group-hover:saturate-100"
                   />
                 </a>
@@ -69,9 +76,11 @@ const Hero12 = () => {
                     "group flex aspect-square h-12 items-center justify-center p-0",
                   )}
                 >
-                  <img
+                  <Image
                     src="https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/typescript-icon.svg"
                     alt="TypeScript logo"
+                    width={24}
+                    height={24}
                     className="h-6 saturate-0 transition-all group-hover:saturate-100"
                   />
                 </a>
@@ -83,9 +92,11 @@ const Hero12 = () => {
                     "group flex aspect-square h-12 items-center justify-center p-0",
                   )}
                 >
-                  <img
+                  <Image
                     src="https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/react-icon.svg"
                     alt="React logo"
+                    width={24}
+                    height={24}
                     className="h-6 saturate-0 transition-all group-hover:saturate-100"
                   />
                 </a>
@@ -96,9 +107,11 @@ const Hero12 = () => {
                     "group flex aspect-square h-12 items-center justify-center p-0",
                   )}
                 >
-                  <img
+                  <Image
                     src="https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/tailwind-icon.svg"
                     alt="Tailwind CSS logo"
+                    width={24}
+                    height={24}
                     className="h-6 saturate-0 transition-all group-hover:saturate-100"
                   />
                 </a>

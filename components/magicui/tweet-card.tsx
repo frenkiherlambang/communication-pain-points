@@ -3,7 +3,6 @@ import {
   enrichTweet,
   type EnrichedTweet,
   type TweetProps,
-  type TwitterComponents,
 } from "react-tweet";
 import { getTweet, type Tweet } from "react-tweet/api";
 
@@ -213,11 +212,11 @@ export const TweetMedia = ({ tweet }: { tweet: EnrichedTweet }) => {
       )}
       {!tweet.video &&
         !tweet.photos &&
-        // @ts-expect-error
+        // @ts-expect-error - tweet.card.binding_values may not have proper typing for thumbnail_image_large
         tweet?.card?.binding_values?.thumbnail_image_large?.image_value.url && (
           <Image
             src={
-              // @ts-expect-error
+              // @ts-expect-error - tweet.card.binding_values may not have proper typing for thumbnail_image_large
               tweet.card.binding_values.thumbnail_image_large.image_value.url
             }
             width={400}

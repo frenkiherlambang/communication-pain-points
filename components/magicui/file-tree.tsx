@@ -239,6 +239,7 @@ const Folder = forwardRef<
     return (
       <AccordionPrimitive.Item
         {...props}
+        ref={ref}
         value={value}
         className="relative h-full overflow-hidden"
       >
@@ -286,7 +287,6 @@ const File = forwardRef<
   HTMLButtonElement,
   {
     value: string;
-    handleSelect?: (id: string) => void;
     isSelectable?: boolean;
     isSelect?: boolean;
     fileIcon?: React.ReactNode;
@@ -296,7 +296,6 @@ const File = forwardRef<
     {
       value,
       className,
-      handleSelect,
       isSelectable = true,
       isSelect,
       fileIcon,

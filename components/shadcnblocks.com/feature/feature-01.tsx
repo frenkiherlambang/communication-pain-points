@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 interface Feature1Props {
   title: string;
@@ -53,9 +54,11 @@ const Feature1 = ({
               </Button>
             </div>
           </div>
-          <img
+          <Image
             src={imageSrc}
             alt={imageAlt}
+            width={800}
+            height={384}
             className="max-h-96 w-full rounded-md object-cover"
           />
         </div>
