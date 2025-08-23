@@ -89,7 +89,6 @@ const Footer2 = ({
                   <LogoImage
                     src={logo.src}
                     alt={logo.alt}
-                    title={logo.title}
                     className="h-10"
                   />
                   <LogoText className="text-xl">{logo.title}</LogoText>

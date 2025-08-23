@@ -8,6 +8,7 @@ import {
   RotateCw,
   Share,
 } from "lucide-react";
+import Image from "next/image";
 import React from "react";
 
 import { cn } from "@/lib/utils";
@@ -107,14 +108,18 @@ const BrowserMockup = ({
     </div>
 
     <div className="relative w-full">
-      <img
+      <Image
         src={DahboardUrlDesktop}
-        alt=""
+        alt="Desktop Dashboard"
+        width={1200}
+        height={675}
         className="object-cove hidden aspect-video h-full w-full object-top md:block"
       />
-      <img
+      <Image
         src={DahboardUrlMobile}
-        alt=""
+        alt="Mobile Dashboard"
+        width={400}
+        height={600}
         className="block h-full w-full object-cover md:hidden"
       />
     </div>

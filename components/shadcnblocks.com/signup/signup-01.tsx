@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Image from "next/image";
 
 interface Signup1Props {
   heading?: string;
@@ -33,8 +34,10 @@ const Signup1 = ({
         {/* Logo */}
         <div className="flex flex-col items-center gap-6 lg:justify-start">
           <a href={logo.url}>
-            <img
+            <Image
               src={logo.src}
+              width={120}
+              height={40}
               alt={logo.alt}
               title={logo.title}
               className="h-10 dark:invert"

@@ -7,6 +7,7 @@ import {
   PieChart,
   SquareKanban,
 } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 
 import { cn } from "@/lib/utils";
@@ -123,9 +124,11 @@ const Hero195 = ({
                         },
                       )}
                     >
-                      <img
+                      <Image
                         src={tab.image}
                         alt={tab.title}
+                        width={800}
+                        height={500}
                         className="border-border aspect-[16/10] w-full border object-top shadow-[0_6px_20px_rgb(0,0,0,0.12)]"
                       />
                       <BorderBeam duration={8} size={100} />

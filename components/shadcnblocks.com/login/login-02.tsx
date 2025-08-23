@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Image from "next/image";
 
 interface Login2Props {
   heading?: string;
@@ -34,10 +35,12 @@ const Login2 = ({
         <div className="flex flex-col items-center gap-6 lg:justify-start">
           {/* Logo */}
           <a href={logo.url}>
-            <img
+            <Image
               src={logo.src}
               alt={logo.alt}
               title={logo.title}
+              width={120}
+              height={40}
               className="h-10 dark:invert"
             />
           </a>

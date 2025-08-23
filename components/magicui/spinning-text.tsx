@@ -1,5 +1,5 @@
 "use client";
-import { cn } from "/lib/utils";
+import { cn } from "@/lib/utils";
 import { motion, Transition, Variants } from "motion/react";
 import React, { CSSProperties } from "react";
 
@@ -20,7 +20,7 @@ type SpinningTextProps = {
 
 const BASE_TRANSITION = {
   repeat: Infinity,
-  ease: "linear",
+  ease: "linear" as const,
 };
 
 const BASE_ITEM_VARIANTS = {

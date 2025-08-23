@@ -49,46 +49,7 @@ export const ScratchToReveal: React.FC<ScratchToRevealProps> = ({
     }
   }, [gradientColors]);
 
-  useEffect(() => {
-    const handleDocumentMouseMove = (event: MouseEvent) => {
-      if (!isScratching) return;
-      scratch(event.clientX, event.clientY);
-    };
 
-    const handleDocumentTouchMove = (event: TouchEvent) => {
-      if (!isScratching) return;
-      const touch = event.touches[0];
-      scratch(touch.clientX, touch.clientY);
-    };
-
-    const handleDocumentMouseUp = () => {
-      setIsScratching(false);
-      checkCompletion();
-    };
-
-    const handleDocumentTouchEnd = () => {
-      setIsScratching(false);
-      checkCompletion();
-    };
-
-    document.addEventListener("mousedown", handleDocumentMouseMove);
-    document.addEventListener("mousemove", handleDocumentMouseMove);
-    document.addEventListener("touchstart", handleDocumentTouchMove);
-    document.addEventListener("touchmove", handleDocumentTouchMove);
-    document.addEventListener("mouseup", handleDocumentMouseUp);
-    document.addEventListener("touchend", handleDocumentTouchEnd);
-    document.addEventListener("touchcancel", handleDocumentTouchEnd);
-
-    return () => {
-      document.removeEventListener("mousedown", handleDocumentMouseMove);
-      document.removeEventListener("mousemove", handleDocumentMouseMove);
-      document.removeEventListener("touchstart", handleDocumentTouchMove);
-      document.removeEventListener("touchmove", handleDocumentTouchMove);
-      document.removeEventListener("mouseup", handleDocumentMouseUp);
-      document.removeEventListener("touchend", handleDocumentTouchEnd);
-      document.removeEventListener("touchcancel", handleDocumentTouchEnd);
-    };
-  }, [isScratching, minScratchPercentage, onComplete, checkCompletion]);
 
   const handleMouseDown = () => setIsScratching(true);
 
@@ -145,6 +106,47 @@ export const ScratchToReveal: React.FC<ScratchToRevealProps> = ({
       }
     }
   }, [isComplete, minScratchPercentage, startAnimation]);
+
+  useEffect(() => {
+    const handleDocumentMouseMove = (event: MouseEvent) => {
+      if (!isScratching) return;
+      scratch(event.clientX, event.clientY);
+    };
+
+    const handleDocumentTouchMove = (event: TouchEvent) => {
+      if (!isScratching) return;
+      const touch = event.touches[0];
+      scratch(touch.clientX, touch.clientY);
+    };
+
+    const handleDocumentMouseUp = () => {
+      setIsScratching(false);
+      checkCompletion();
+    };
+
+    const handleDocumentTouchEnd = () => {
+      setIsScratching(false);
+      checkCompletion();
+    };
+
+    document.addEventListener("mousedown", handleDocumentMouseMove);
+    document.addEventListener("mousemove", handleDocumentMouseMove);
+    document.addEventListener("touchstart", handleDocumentTouchMove);
+    document.addEventListener("touchmove", handleDocumentTouchMove);
+    document.addEventListener("mouseup", handleDocumentMouseUp);
+    document.addEventListener("touchend", handleDocumentTouchEnd);
+    document.addEventListener("touchcancel", handleDocumentTouchEnd);
+
+    return () => {
+      document.removeEventListener("mousedown", handleDocumentMouseMove);
+      document.removeEventListener("mousemove", handleDocumentMouseMove);
+      document.removeEventListener("touchstart", handleDocumentTouchMove);
+      document.removeEventListener("touchmove", handleDocumentTouchMove);
+      document.removeEventListener("mouseup", handleDocumentMouseUp);
+      document.removeEventListener("touchend", handleDocumentTouchEnd);
+      document.removeEventListener("touchcancel", handleDocumentTouchEnd);
+    };
+  }, [isScratching, checkCompletion]);
 
   return (
     <motion.div

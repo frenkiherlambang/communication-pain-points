@@ -1,4 +1,5 @@
 import { Book, Download, Share2 } from "lucide-react";
+import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 
@@ -73,8 +74,10 @@ const Resource1 = () => {
                       className="border-border bg-muted/50 hover:bg-muted flex size-10 items-center justify-center rounded-full border transition-colors"
                       aria-label="Share on Instagram"
                     >
-                      <img
+                      <Image
                         src="https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/instagram-icon.svg"
+                        width={20}
+                        height={20}
                         alt="Instagram"
                         className="size-5"
                       />
@@ -86,8 +89,10 @@ const Resource1 = () => {
                       className="border-border bg-muted/50 hover:bg-muted flex size-10 items-center justify-center rounded-full border transition-colors"
                       aria-label="Share on LinkedIn"
                     >
-                      <img
+                      <Image
                         src="https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/linkedin-icon.svg"
+                        width={20}
+                        height={20}
                         alt="LinkedIn"
                         className="size-5"
                       />
@@ -99,8 +104,10 @@ const Resource1 = () => {
                       className="border-border bg-muted/50 hover:bg-muted flex size-10 items-center justify-center rounded-full border transition-colors"
                       aria-label="Share on Product Hunt"
                     >
-                      <img
+                      <Image
                         src="https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/producthunt-icon.svg"
+                        width={20}
+                        height={20}
                         alt="Product Hunt"
                         className="size-5"
                       />
@@ -112,8 +119,10 @@ const Resource1 = () => {
                       className="border-border bg-muted/50 hover:bg-muted flex size-10 items-center justify-center rounded-full border transition-colors"
                       aria-label="Share on Twitter"
                     >
-                      <img
+                      <Image
                         src="https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/twitter-icon.svg"
+                        width={20}
+                        height={20}
                         alt="Twitter"
                         className="size-5"
                       />
