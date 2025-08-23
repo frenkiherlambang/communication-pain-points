@@ -4,27 +4,37 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Image from "next/image"
-import { useLogin } from "@/hooks/use-login"
-import { useState, FormEvent } from "react"
+import { FormEvent } from "react"
+
+interface LoginFormProps extends React.ComponentProps<"div"> {
+  email: string
+  password: string
+  isLoading: boolean
+  error: string | null
+  success: boolean
+  onEmailChange: (email: string) => void
+  onPasswordChange: (password: string) => void
+  onSubmit: (e: FormEvent) => void
+}
 
 export function LoginForm({
   className,
+  email,
+  password,
+  isLoading,
+  error,
+  success,
+  onEmailChange,
+  onPasswordChange,
+  onSubmit,
   ...props
-}: React.ComponentProps<"div">) {
-  const { login, isLoading, error, success } = useLogin()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
-    await login(email, password)
-  }
+}: LoginFormProps) {
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8" onSubmit={handleSubmit}>
+          <form className="p-6 md:p-8" onSubmit={onSubmit}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Welcome back</h1>
@@ -49,7 +59,7 @@ export function LoginForm({
                   type="email"
                   placeholder="m@example.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => onEmailChange(e.target.value)}
                   required
                   disabled={isLoading}
                 />
@@ -68,7 +78,7 @@ export function LoginForm({
                   id="password" 
                   type="password" 
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => onPasswordChange(e.target.value)}
                   required 
                   disabled={isLoading}
                 />

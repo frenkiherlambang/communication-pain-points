@@ -15,6 +15,35 @@ Konfigurasi client Supabase dengan environment variables:
 ### 2. API Route
 **File:** `app/api/api/login/route.ts`
 
+### 3. Custom Hook
+**File:** `hooks/use-login.ts`
+
+**Fungsi:** Mengelola state dan logika login di client-side
+**Return:** `{ login, isLoading, error, success }`
+**Penggunaan:** Digunakan di level halaman (page), bukan di komponen
+
+### 4. Arsitektur Stateless Components
+- **Komponen LoginForm**: Sepenuhnya stateless, menerima semua data melalui props
+- **Halaman Login**: Mengelola state menggunakan `useLogin` hook dan meneruskan data ke komponen
+- **Separation of Concerns**: Logika bisnis di halaman, presentasi di komponen
+
+#### Props Interface untuk LoginForm:
+```typescript
+interface LoginFormProps extends React.ComponentProps<"form"> {
+  email: string
+  password: string
+  isLoading: boolean
+  error: string | null
+  success: boolean
+  onEmailChange: (email: string) => void
+  onPasswordChange: (password: string) => void
+  onSubmit: (e: FormEvent) => void
+}
+```
+
+### 5. API Route Details
+**File:** `app/api/api/login/route.ts`
+
 #### Endpoints:
 - **POST /api/api/login**: Endpoint untuk proses login
 - **GET /api/api/login**: Informasi API endpoint
@@ -70,8 +99,8 @@ const { login, isLoading, error, success } = useLogin();
 await login('user@example.com', 'password123');
 ```
 
-### 4. Login Components
-Terdapat 5 variasi komponen login yang telah diintegrasikan:
+### 6. Login Components (Stateless)
+Terdapat 5 variasi komponen login yang telah direfactor menjadi stateless:
 
 - `components/shadcn-blocks/login-01/login-form.tsx`
 - `components/shadcn-blocks/login-02/login-form.tsx`
@@ -79,11 +108,48 @@ Terdapat 5 variasi komponen login yang telah diintegrasikan:
 - `components/shadcn-blocks/login-04/login-form.tsx`
 - `components/shadcn-blocks/login-05/login-form.tsx`
 
-Semua komponen menggunakan:
-- State management untuk email dan password
-- Error dan success handling
-- Loading state management
-- Form validation
+#### Karakteristik Komponen Stateless:
+- **No Internal State**: Tidak memiliki state internal
+- **Props-driven**: Semua data diterima melalui props
+- **Pure Components**: Hanya bertanggung jawab untuk rendering UI
+- **Reusable**: Dapat digunakan kembali dengan data yang berbeda
+
+#### Contoh Penggunaan di Halaman:
+```typescript
+"use client"
+
+import { LoginForm } from "@/components/shadcn-blocks/login-01/login-form"
+import { useLogin } from "@/hooks/use-login"
+import { useState, FormEvent } from "react"
+
+export default function Page() {
+  const { login, isLoading, error, success } = useLogin()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+    await login(email, password)
+  }
+
+  return (
+    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+      <div className="w-full max-w-sm">
+        <LoginForm 
+          email={email}
+          password={password}
+          isLoading={isLoading}
+          error={error}
+          success={success}
+          onEmailChange={setEmail}
+          onPasswordChange={setPassword}
+          onSubmit={handleSubmit}
+        />
+      </div>
+    </div>
+  )
+}
+```
 
 ## Error Handling
 
@@ -110,16 +176,51 @@ Semua komponen menggunakan:
 ### Unit Tests:
 - **API Route Tests**: `__tests__/api/login.test.ts`
 - **Hook Tests**: `__tests__/hooks/use-login.test.ts`
+- **Component Tests**: `__tests__/components/login-form.test.tsx`
+- **Page Tests**: `__tests__/pages/login-page.test.tsx`
 
 ### Test Coverage:
+
+#### API Route Tests:
 - ✅ Successful login
 - ✅ Invalid credentials
 - ✅ Missing email/password
 - ✅ Email not confirmed
 - ✅ Network errors
 - ✅ Server errors
+
+#### Hook Tests:
 - ✅ Loading states
 - ✅ Error reset on new attempts
+- ✅ Success state management
+
+#### Component Tests (Stateless):
+- ✅ Render dengan props yang benar
+- ✅ Display email dan password values
+- ✅ Call onEmailChange saat input berubah
+- ✅ Call onPasswordChange saat input berubah
+- ✅ Call onSubmit saat form disubmit
+- ✅ Display error message
+- ✅ Display success message
+- ✅ Disable inputs saat loading
+- ✅ Accessibility dan form structure
+
+#### Page Tests:
+- ✅ Render halaman dengan form
+- ✅ Handle email dan password input changes
+- ✅ Call login function saat form disubmit
+- ✅ Display loading, error, dan success states
+- ✅ Maintain state between re-renders
+
+### Menjalankan Tests:
+```bash
+# Semua tests
+npm test
+
+# Test spesifik
+npm test -- __tests__/components/login-form.test.tsx
+npm test -- __tests__/pages/login-page.test.tsx
+```
 
 ## Setup Instructions
 
@@ -212,6 +313,81 @@ export function LoginForm() {
 1. **Security**:
    - Jangan commit file `.env.local` ke repository
    - Gunakan environment variables untuk semua kredensial
+
+2. **Component Architecture**:
+   - Gunakan stateless components untuk UI yang reusable
+   - Pindahkan state management ke level halaman
+   - Pisahkan business logic ke custom hooks
+
+3. **Testing**:
+   - Test komponen secara terpisah dari business logic
+   - Mock dependencies untuk unit testing
+   - Maintain high test coverage untuk critical paths
+
+## Changelog
+
+### v2.0.0 - Stateless Component Architecture
+**Tanggal**: Januari 2025
+
+#### Breaking Changes:
+- ✅ **Refactor LoginForm menjadi stateless**: Semua komponen login sekarang menerima props dan tidak memiliki state internal
+- ✅ **Pindahkan state ke page level**: State management (email, password, loading, error) dipindahkan ke halaman yang menggunakan komponen
+- ✅ **Custom Hook useLogin**: Business logic login dipindahkan ke custom hook yang reusable
+
+#### New Features:
+- ✅ **Improved Reusability**: Komponen dapat digunakan dengan data yang berbeda
+- ✅ **Better Testing**: Unit test terpisah untuk komponen dan business logic
+- ✅ **Enhanced Documentation**: Dokumentasi lengkap dengan contoh penggunaan
+
+#### Technical Improvements:
+- ✅ **Type Safety**: Interface props yang jelas untuk semua komponen
+- ✅ **Performance**: Komponen stateless lebih ringan dan mudah di-optimize
+- ✅ **Maintainability**: Separation of concerns yang lebih baik
+
+#### Migration Guide:
+Untuk mengupdate dari versi sebelumnya:
+1. Update import komponen LoginForm
+2. Tambahkan state management di halaman
+3. Import dan gunakan useLogin hook
+4. Pass props yang diperlukan ke LoginForm
+
+```typescript
+// Sebelum (v1.x)
+import { LoginForm } from "@/components/login-form"
+
+export default function Page() {
+  return <LoginForm />
+}
+
+// Sesudah (v2.x)
+import { LoginForm } from "@/components/login-form"
+import { useLogin } from "@/hooks/use-login"
+import { useState } from "react"
+
+export default function Page() {
+  const { login, isLoading, error, success } = useLogin()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    await login(email, password)
+  }
+
+  return (
+    <LoginForm 
+      email={email}
+      password={password}
+      isLoading={isLoading}
+      error={error}
+      success={success}
+      onEmailChange={setEmail}
+      onPasswordChange={setPassword}
+      onSubmit={handleSubmit}
+    />
+  )
+}
+```
    - Implement rate limiting untuk login attempts
 
 2. **User Experience**:

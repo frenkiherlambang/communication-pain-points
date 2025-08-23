@@ -4,39 +4,33 @@
 import { POST, GET } from '@/app/api/api/login/route'
 
 // Mock Supabase
-jest.mock('@supabase/supabase-js', () => ({
-  createClient: jest.fn()
+jest.mock('@/lib/supabase', () => ({
+  supabase: {
+    auth: {
+      signInWithPassword: jest.fn()
+    }
+  }
 }))
+
+// Import mocked supabase
+import { supabase } from '@/lib/supabase'
+const mockSignInWithPassword = jest.mocked(supabase.auth.signInWithPassword)
 
 // Mock Next.js server components
 jest.mock('next/server', () => ({
-  NextRequest: jest.fn().mockImplementation((url, options) => ({
-    url,
-    method: options?.method || 'GET',
-    json: jest.fn().mockResolvedValue(JSON.parse(options?.body || '{}')),
-    headers: new Map()
-  })),
+  NextRequest: jest.fn(),
   NextResponse: {
     json: jest.fn().mockImplementation((data, options) => ({
-      json: jest.fn().mockResolvedValue(data),
-      status: options?.status || 200
+      json: () => Promise.resolve(data),
+      status: options?.status || 200,
+      ok: (options?.status || 200) < 400
     }))
   }
 }))
 
-const { createClient } = require('@supabase/supabase-js')
-const mockCreateClient = createClient as jest.MockedFunction<typeof createClient>
-
 describe('/api/api/login', () => {
-  let mockSupabase: any
-
   beforeEach(() => {
-    mockSupabase = {
-      auth: {
-        signInWithPassword: jest.fn()
-      }
-    }
-    mockCreateClient.mockReturnValue(mockSupabase)
+    jest.clearAllMocks()
   })
 
   afterEach(() => {
@@ -69,10 +63,15 @@ describe('/api/api/login', () => {
     })
 
     it('should return 401 for invalid credentials', async () => {
-      mockSupabase.auth.signInWithPassword.mockResolvedValue({
-        data: { user: null, session: null },
-        error: { message: 'Invalid login credentials' }
-      })
+      mockSignInWithPassword.mockResolvedValue({
+         data: { user: null, session: null },
+         error: { 
+           message: 'Invalid login credentials',
+           code: 'invalid_credentials',
+           status: 400,
+           name: 'AuthError'
+         } as any
+       })
 
       const mockRequest = {
         json: jest.fn().mockResolvedValue({ 
@@ -89,10 +88,15 @@ describe('/api/api/login', () => {
     })
 
     it('should return 401 for unconfirmed email', async () => {
-      mockSupabase.auth.signInWithPassword.mockResolvedValue({
-        data: { user: null, session: null },
-        error: { message: 'Email not confirmed' }
-      })
+      mockSignInWithPassword.mockResolvedValue({
+         data: { user: null, session: null },
+         error: { 
+           message: 'Email not confirmed',
+           code: 'email_not_confirmed',
+           status: 400,
+           name: 'AuthError'
+         } as any
+       })
 
       const mockRequest = {
         json: jest.fn().mockResolvedValue({ 
@@ -112,14 +116,27 @@ describe('/api/api/login', () => {
       const mockUser = {
         id: '123',
         email: 'test@example.com',
-        user_metadata: { name: 'Test User' }
+        user_metadata: { name: 'Test User' },
+        app_metadata: {},
+        aud: 'authenticated',
+        created_at: '2023-01-01T00:00:00Z',
+        confirmed_at: '2023-01-01T00:00:00Z',
+        email_confirmed_at: '2023-01-01T00:00:00Z',
+        phone: '',
+        last_sign_in_at: '2023-01-01T00:00:00Z',
+        role: 'authenticated',
+        updated_at: '2023-01-01T00:00:00Z'
       }
       const mockSession = {
         access_token: 'mock-token',
-        refresh_token: 'mock-refresh-token'
+        refresh_token: 'mock-refresh-token',
+        expires_in: 3600,
+        token_type: 'bearer',
+        user: mockUser,
+        expires_at: Math.floor(Date.now() / 1000) + 3600
       }
 
-      mockSupabase.auth.signInWithPassword.mockResolvedValue({
+      mockSignInWithPassword.mockResolvedValue({
         data: { user: mockUser, session: mockSession },
         error: null
       })
@@ -141,7 +158,7 @@ describe('/api/api/login', () => {
     })
 
     it('should handle unexpected errors', async () => {
-      mockSupabase.auth.signInWithPassword.mockRejectedValue(
+      mockSignInWithPassword.mockRejectedValue(
         new Error('Database connection failed')
       )
 
