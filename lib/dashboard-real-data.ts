@@ -328,7 +328,6 @@ export async function calculateRealCustomerJourneyMetrics(): Promise<{
 export async function calculateRealSegmentPerformance(): Promise<CustomerSegmentData[]> {
   try {
     const feedbacks = await fetchAllCustomerFeedbacks()
-    const journeyMetrics = await calculateRealCustomerJourneyMetrics()
     
     // Group by category and calculate completion rates
     const categoryMetrics: { [key: string]: { total: number, resolved: number } } = {}

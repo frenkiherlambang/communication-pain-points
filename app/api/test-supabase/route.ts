@@ -33,12 +33,12 @@ export async function GET() {
     }
 
     // Test table schema by trying to insert minimal data
-    const { data: schemaTest, error: schemaError } = await supabase
+    const { error: schemaError } = await supabase
       .from('customer_feedbacks')
       .insert({})
       .select()
 
-    let schemaResult = {
+    const schemaResult = {
       error: schemaError?.message || 'No error',
       details: schemaError?.details || 'No details',
       hint: schemaError?.hint || 'No hint'

@@ -3,7 +3,10 @@ import {
   CustomerFeedback, 
   CustomerFeedbackSentiment, 
   CustomerFeedbackTopic, 
-  CustomerFeedbackCategory 
+  CustomerFeedbackCategory,
+  CustomerFeedbackTypeOfPost,
+  CustomerFeedbackSource,
+  CustomerFeedbackStatus
 } from '@/types/interface/customer-feedbacks'
 
 // Filter interface for API requests
@@ -219,9 +222,34 @@ const sampleCustomerFeedbacks: CustomerFeedback[] = [
 ]
 
 /**
+ * Database row interface matching the customer_feedbacks table schema
+ */
+interface DatabaseFeedbackRow {
+  id: string;
+  link?: string;
+  post_copy?: string;
+  date: string;
+  time: string;
+  date_responses?: string;
+  account_id?: string;
+  customer_id?: string;
+  category: CustomerFeedbackCategory;
+  type_of_post: CustomerFeedbackTypeOfPost;
+  topic: CustomerFeedbackTopic;
+  product?: string;
+  sentiment: CustomerFeedbackSentiment;
+  source: CustomerFeedbackSource;
+  reply?: string;
+  status: CustomerFeedbackStatus;
+  details?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+/**
  * Transform database row to CustomerFeedback interface
  */
-function transformDatabaseRow(row: any): CustomerFeedback {
+function transformDatabaseRow(row: DatabaseFeedbackRow): CustomerFeedback {
   return {
     ID: row.id,
     Link: row.link || '',

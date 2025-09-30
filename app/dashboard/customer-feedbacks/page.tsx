@@ -1,19 +1,19 @@
 "use client"
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Loader2, Search, Filter, MessageSquare, Calendar, User, Tag, TrendingUp, TrendingDown, Minus, Eye, Clock, Reply, ArrowLeft } from 'lucide-react'
-import { CustomerFeedback, CustomerFeedbackSentiment, CustomerFeedbackTopic, CustomerFeedbackCategory } from '@/types/interface/customer-feedbacks'
-import { fetchCustomerFeedbacks, CustomerFeedbackFilters, type CustomerFeedbackApiResponse } from '@/lib/customer-feedback-api'
+import { CustomerFeedback, CustomerFeedbackSentiment } from '@/types/interface/customer-feedbacks'
+import { fetchCustomerFeedbacks, CustomerFeedbackFilters } from '@/lib/customer-feedback-api'
 
 export default function CustomerFeedbacksPage() {
   const router = useRouter()
@@ -27,12 +27,7 @@ export default function CustomerFeedbacksPage() {
   const [categoryFilter, setCategoryFilter] = useState<string>('all')
   const [selectedFeedback, setSelectedFeedback] = useState<CustomerFeedback | null>(null)
 
-  // Fetch data from Supabase or use sample data
-  useEffect(() => {
-    loadCustomerFeedbacks()
-  }, [])
-
-  const loadCustomerFeedbacks = async () => {
+  const loadCustomerFeedbacks = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
@@ -55,27 +50,24 @@ export default function CustomerFeedbacksPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [sentimentFilter, topicFilter, categoryFilter, searchTerm])
+
+  // Fetch data from Supabase or use sample data
+  useEffect(() => {
+    loadCustomerFeedbacks()
+  }, [loadCustomerFeedbacks])
 
   // Apply filters when they change
   useEffect(() => {
     if (!loading) {
       loadCustomerFeedbacks()
     }
-  }, [sentimentFilter, topicFilter, categoryFilter, searchTerm])
+  }, [loadCustomerFeedbacks, loading])
 
   // Use feedbacks directly since filtering is now done server-side
   const filteredFeedbacks = feedbacks
 
-  // Get sentiment badge variant
-  const getSentimentBadgeVariant = (sentiment: CustomerFeedbackSentiment) => {
-    switch (sentiment) {
-      case 'Positive': return 'default'
-      case 'Negative': return 'destructive'
-      case 'Neutral': return 'secondary'
-      default: return 'outline'
-    }
-  }
+
 
   // Get sentiment badge color for detailed view
   const getSentimentBadgeColor = (sentiment: CustomerFeedbackSentiment) => {
@@ -171,7 +163,7 @@ export default function CustomerFeedbacksPage() {
                 <div className="text-sm text-orange-600 space-y-1">
                   <p>Currently displaying sample data. This usually means:</p>
                   <ul className="list-disc list-inside ml-2 space-y-1">
-                    <li>The Supabase table doesn't exist or has wrong schema</li>
+                    <li>The Supabase table doesn&apos;t exist or has wrong schema</li>
                     <li>Row Level Security (RLS) policies are blocking access</li>
                     <li>Environment variables are not configured correctly</li>
                   </ul>

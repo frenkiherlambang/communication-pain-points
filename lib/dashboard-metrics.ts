@@ -1,17 +1,4 @@
 import { supabase } from './supabase'
-import { CustomerFeedback } from '@/types/interface/customer-feedbacks'
-
-// Database response types
-interface DatabaseFeedbackRow {
-  id: string
-  sentiment: string | null
-  type_of_post: string | null
-  topic: string | null
-  status: string | null
-  date: string | null
-  time: string | null
-  date_responses: string | null
-}
 
 export interface DashboardMetrics {
   overallSentimentScore: number
@@ -230,7 +217,7 @@ export async function calculateAverageResponseTime(): Promise<number> {
           const diffInHours = diffInMs / (1000 * 60 * 60)
           
           return diffInHours > 0 ? diffInHours : null
-        } catch (error) {
+        } catch {
           return null
         }
       })

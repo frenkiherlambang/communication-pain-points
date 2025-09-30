@@ -28,7 +28,7 @@ import {
   TopicTrendData,
   PainPointAlert
 } from '@/lib/dashboard-real-data'
-import { CustomerFeedback } from '@/types/interface'
+
 
 const chartConfig: ChartConfig = {
   positive: {
@@ -113,7 +113,7 @@ export default function DashboardPage() {
         }
 
         const averageResponseTime = feedbacks.length > 0 
-          ? feedbacks.reduce((sum, feedback) => sum + (24), 0) / feedbacks.length
+          ? feedbacks.reduce((sum) => sum + (24), 0) / feedbacks.length
           : 24
 
         setDashboardData({
