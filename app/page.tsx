@@ -124,7 +124,7 @@ export default function Home() {
             Ready to Transform Customer Communications?
           </h3>
           <p className="text-gray-600 dark:text-gray-300 mb-6">
-            Join Samsung's marketing intelligence platform and start identifying communication pain points today.
+            Join Samsung&apos;s marketing intelligence platform and start identifying communication pain points today.
           </p>
           <div className="flex gap-4 justify-center flex-col sm:flex-row">
             <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">
