@@ -1,0 +1,20 @@
+create table if not exists interactions (
+  id uuid primary key default gen_random_uuid(),
+  link text,
+  post_copy text,
+  date date not null,
+  time time not null,
+  date_response date,
+  user_id uuid references users(id) on delete cascade,
+  customer_id text,
+  category text,
+  type_of_post text,
+  topic text,
+  product text,
+  sentiment text check (sentiment in ('Positive','Neutral','Negative')),
+  source text,
+  reply text,
+  status text,
+  details text,
+  created_at timestamp with time zone default now()
+);
