@@ -13,7 +13,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Loader2, Search, Filter, MessageSquare, Calendar, User, Tag, TrendingUp, TrendingDown, Minus, Eye, Clock, Reply, ArrowLeft } from 'lucide-react'
 import { CustomerFeedback, CustomerFeedbackSentiment, CustomerFeedbackTopic, CustomerFeedbackCategory } from '@/types/interface/customer-feedbacks'
-import { fetchCustomerFeedbacks, CustomerFeedbackFilters } from '@/lib/customer-feedback-api'
+import { fetchCustomerFeedbacks, CustomerFeedbackFilters, type CustomerFeedbackApiResponse } from '@/lib/customer-feedback-api'
 
 export default function CustomerFeedbacksPage() {
   const router = useRouter()
@@ -112,11 +112,11 @@ export default function CustomerFeedbacksPage() {
   // Calculate statistics
   const stats = {
     total: filteredFeedbacks.length,
-    positive: filteredFeedbacks.filter(f => f.Sentiment === 'Positive').length,
-    negative: filteredFeedbacks.filter(f => f.Sentiment === 'Negative').length,
-    neutral: filteredFeedbacks.filter(f => f.Sentiment === 'Neutral').length,
-    complaints: filteredFeedbacks.filter(f => f['Type of post'] === 'Complaint').length,
-    resolved: filteredFeedbacks.filter(f => f.Status === 'Clear').length
+    positive: filteredFeedbacks.filter(f => f.sentiment === 'Positive').length,
+    negative: filteredFeedbacks.filter(f => f.sentiment === 'Negative').length,
+    neutral: filteredFeedbacks.filter(f => f.sentiment === 'Neutral').length,
+    complaints: filteredFeedbacks.filter(f => f.typeOfPost === 'Complaint').length,
+    resolved: filteredFeedbacks.filter(f => f.status === 'Clear').length
   }
 
   if (loading) {
@@ -146,7 +146,14 @@ export default function CustomerFeedbacksPage() {
           </Button>
         </div>
         <div className="flex flex-col space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">Customer Feedbacks</h1>
+          <div className="flex items-center space-x-3">
+            <h1 className="text-3xl font-bold tracking-tight">Customer Feedbacks</h1>
+            {isUsingFallback && (
+              <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
+                Sample Data
+              </Badge>
+            )}
+          </div>
           <p className="text-muted-foreground">
             View and analyze customer feedback data from various sources
           </p>
@@ -155,14 +162,27 @@ export default function CustomerFeedbacksPage() {
 
       {/* Error Alert */}
       {error && (
-        <Alert>
+        <Alert className="border-orange-200 bg-orange-50">
           <AlertDescription>
-            {error}
-            {isUsingFallback && (
-              <span className="block mt-1 text-sm text-muted-foreground">
-                Currently displaying sample data. The database table may not exist yet.
-              </span>
-            )}
+            <div className="space-y-2">
+              <p className="font-medium text-orange-800">Database Connection Issue</p>
+              <p className="text-orange-700">{error}</p>
+              {isUsingFallback && (
+                <div className="text-sm text-orange-600 space-y-1">
+                  <p>Currently displaying sample data. This usually means:</p>
+                  <ul className="list-disc list-inside ml-2 space-y-1">
+                    <li>The Supabase table doesn't exist or has wrong schema</li>
+                    <li>Row Level Security (RLS) policies are blocking access</li>
+                    <li>Environment variables are not configured correctly</li>
+                  </ul>
+                  <p className="mt-2">
+                    <strong>Solution:</strong> Please follow the setup instructions in{' '}
+                    <code className="bg-orange-100 px-1 py-0.5 rounded text-xs">SUPABASE_SETUP.md</code>{' '}
+                    to configure your Supabase database properly.
+                  </p>
+                </div>
+              )}
+            </div>
           </AlertDescription>
         </Alert>
       )}
@@ -360,51 +380,51 @@ export default function CustomerFeedbacksPage() {
                       <TableCell className="font-medium">
                         <div className="flex items-center space-x-2">
                           <Calendar className="h-4 w-4 text-muted-foreground" />
-                          <span>{feedback.Date}</span>
+                          <span>{feedback.date}</span>
                         </div>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-2">
                           <User className="h-4 w-4 text-muted-foreground" />
-                          <span className="truncate max-w-[120px]">{feedback['Account ID']}</span>
+                          <span className="truncate max-w-[120px]">{feedback.accountId}</span>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <div className="max-w-[300px] truncate" title={feedback['Post Copy']}>
-                          {feedback['Post Copy']}
+                        <div className="max-w-[300px] truncate" title={feedback.post_copy}>
+                          {feedback.post_copy}
                         </div>
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline" className="truncate max-w-[120px]">
-                          {feedback.Product}
+                          {feedback.product}
                         </Badge>
                       </TableCell>
                       <TableCell>
                         <Badge variant="secondary">
-                          {feedback.Topic}
+                          {feedback.topic}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Badge className={getTypeBadgeColor(feedback['Type of post'])}>
-                          {feedback['Type of post']}
+                        <Badge className={getTypeBadgeColor(feedback.typeOfPost)}>
+                          {feedback.typeOfPost}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Badge className={getSentimentBadgeColor(feedback.Sentiment)}>
+                        <Badge className={getSentimentBadgeColor(feedback.sentiment)}>
                           <span className="flex items-center space-x-1">
-                            {getSentimentIcon(feedback.Sentiment)}
-                            <span>{feedback.Sentiment}</span>
+                            {getSentimentIcon(feedback.sentiment)}
+                            <span>{feedback.sentiment}</span>
                           </span>
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={feedback.Status === 'Clear' ? 'default' : 'destructive'}>
-                          {feedback.Status}
+                        <Badge variant={feedback.status === 'Clear' ? 'default' : 'destructive'}>
+                          {feedback.status}
                         </Badge>
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline">
-                          {feedback.Source}
+                          {feedback.source}
                         </Badge>
                       </TableCell>
                       <TableCell>
@@ -425,7 +445,7 @@ export default function CustomerFeedbacksPage() {
                                 Customer Feedback Details
                               </DialogTitle>
                               <DialogDescription>
-                                Detailed view of feedback from {feedback['Account ID']}
+                                Detailed view of feedback from {feedback.accountId}
                               </DialogDescription>
                             </DialogHeader>
                             {selectedFeedback && (
@@ -434,25 +454,25 @@ export default function CustomerFeedbacksPage() {
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                   <div>
                                     <label className="text-sm font-medium text-muted-foreground">Account ID</label>
-                                    <p className="font-medium">{selectedFeedback['Account ID']}</p>
+                                    <p className="font-medium">{selectedFeedback.accountId}</p>
                                   </div>
                                   <div>
                                     <label className="text-sm font-medium text-muted-foreground">Product</label>
-                                    <p>{selectedFeedback.Product}</p>
+                                    <p>{selectedFeedback.product}</p>
                                   </div>
                                   <div>
                                     <label className="text-sm font-medium text-muted-foreground">Date</label>
                                     <p className="flex items-center gap-1">
                                       <Clock className="h-3 w-3" />
-                                      {new Date(selectedFeedback.Date).toLocaleDateString()}
+                                      {new Date(selectedFeedback.date).toLocaleDateString()}
                                     </p>
                                   </div>
                                   <div>
                                     <label className="text-sm font-medium text-muted-foreground">Sentiment</label>
-                                    <Badge className={getSentimentBadgeColor(selectedFeedback.Sentiment)}>
+                                    <Badge className={getSentimentBadgeColor(selectedFeedback.sentiment)}>
                                       <span className="flex items-center space-x-1">
-                                        {getSentimentIcon(selectedFeedback.Sentiment)}
-                                        <span>{selectedFeedback.Sentiment}</span>
+                                        {getSentimentIcon(selectedFeedback.sentiment)}
+                                        <span>{selectedFeedback.sentiment}</span>
                                       </span>
                                     </Badge>
                                   </div>
@@ -463,13 +483,13 @@ export default function CustomerFeedbacksPage() {
                                   <div>
                                     <label className="text-sm font-medium text-muted-foreground">Topic</label>
                                     <div className="mt-1">
-                                      <Badge variant="secondary">{selectedFeedback.Topic}</Badge>
+                                      <Badge variant="secondary">{selectedFeedback.topic}</Badge>
                                     </div>
                                   </div>
                                   <div>
                                     <label className="text-sm font-medium text-muted-foreground">Type</label>
                                     <div className="mt-1">
-                                      <Badge className={getTypeBadgeColor(selectedFeedback['Type of post'])}>{selectedFeedback['Type of post']}</Badge>
+                                      <Badge className={getTypeBadgeColor(selectedFeedback.typeOfPost)}>{selectedFeedback.typeOfPost}</Badge>
                                     </div>
                                   </div>
                                 </div>
@@ -482,7 +502,7 @@ export default function CustomerFeedbacksPage() {
                                       Original Post
                                     </label>
                                     <div className="mt-2 p-4 bg-muted rounded-lg">
-                                      <p className="whitespace-pre-wrap">{selectedFeedback['Post Copy']}</p>
+                                      <p className="whitespace-pre-wrap">{selectedFeedback.post_copy}</p>
                                     </div>
                                   </div>
                                   
@@ -492,11 +512,11 @@ export default function CustomerFeedbacksPage() {
                                       Status & Source
                                     </label>
                                     <div className="mt-2 p-4 bg-muted rounded-lg flex gap-2">
-                                      <Badge variant={selectedFeedback.Status === 'Clear' ? 'default' : 'destructive'}>
-                                        {selectedFeedback.Status}
+                                      <Badge variant={selectedFeedback.status === 'Clear' ? 'default' : 'destructive'}>
+                                        {selectedFeedback.status}
                                       </Badge>
                                       <Badge variant="outline">
-                                        {selectedFeedback.Source}
+                                        {selectedFeedback.source}
                                       </Badge>
                                     </div>
                                   </div>

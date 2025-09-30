@@ -57,16 +57,7 @@ export default function RegisterPage() {
           onSubmit={handleSubmit}
         />
 
-        {/* Sign in link */}
-        <div className="mt-6 text-center text-sm text-muted-foreground">
-          Already have an account?{" "}
-          <a
-            href="/login"
-            className="text-primary font-medium hover:underline"
-          >
-            Sign in
-          </a>
-        </div>
+       
       </div>
     </div>
   )

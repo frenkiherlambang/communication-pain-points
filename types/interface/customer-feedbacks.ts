@@ -29,21 +29,21 @@ export type CustomerFeedbackStatus = 'Clear' | 'Pending';
 export interface CustomerFeedback {
   ID: string;
   Link: string;
-  'Post Copy': string;
-  Date: string;
-  Time: string;
-  'Date responses': string;
-  'Account ID': string;
-  'Customer ID': string;
-  Category: CustomerFeedbackCategory;
-  'Type of post': CustomerFeedbackTypeOfPost;
-  Topic: CustomerFeedbackTopic;
-  Product: string;
-  Sentiment: CustomerFeedbackSentiment;
-  Source: CustomerFeedbackSource;
-  Reply: string;
-  Status: CustomerFeedbackStatus;
-  Details: string;
+  post_copy: string;
+  date: string;
+  time: string;
+  dateResponses: string;
+  accountId: string;
+  customerId: string;
+  category: CustomerFeedbackCategory;
+  typeOfPost: CustomerFeedbackTypeOfPost;
+  topic: CustomerFeedbackTopic;
+  product: string;
+  sentiment: CustomerFeedbackSentiment;
+  source: CustomerFeedbackSource;
+  reply: string;
+  status: CustomerFeedbackStatus;
+  details: string;
 }
 
 // Alternative interface with camelCase property names for better TypeScript conventions

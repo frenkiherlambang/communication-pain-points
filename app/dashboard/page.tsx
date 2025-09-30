@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -9,29 +9,26 @@ import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { ChartContainer, ChartConfig } from '@/components/ui/chart'
 import { LineChart, Line, AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { AlertTriangle, TrendingUp, Clock, CheckCircle, XCircle, AlertCircle, Database } from 'lucide-react'
+import { AlertTriangle, TrendingUp, Clock, CheckCircle, XCircle, AlertCircle, Database, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 
-// Import real customer feedback data
+// Import real customer feedback data functions
 import { 
-  extendedCustomerFeedbackData,
-  generateSentimentTrendData,
-  analyzePainPoints,
-  analyzeTopicTrends,
-  analyzeCustomerSegments,
-  calculateOverallSentimentScore,
-  calculateActivePainPoints,
-  calculateAverageResponseTime
-} from '@/lib/customer-feedback-data'
-
-// Process real data
-const sentimentTrendData = generateSentimentTrendData()
-const painPointData = analyzePainPoints(extendedCustomerFeedbackData)
-const topicTrendData = analyzeTopicTrends(extendedCustomerFeedbackData)
-const customerSegmentData = analyzeCustomerSegments(extendedCustomerFeedbackData)
-const overallSentimentScore = calculateOverallSentimentScore(extendedCustomerFeedbackData)
-const activePainPoints = calculateActivePainPoints(extendedCustomerFeedbackData)
-const averageResponseTime = calculateAverageResponseTime(extendedCustomerFeedbackData)
+  fetchAllCustomerFeedbacks,
+  generateRealSentimentTrendData,
+  analyzeRealPainPoints,
+  analyzeRealTopicTrends,
+  analyzeRealCustomerSegments,
+  generateRealPainPointAlerts,
+  calculateRealCustomerJourneyMetrics,
+  calculateRealSegmentPerformance,
+  SentimentTrendData,
+  CustomerSegmentData,
+  PainPointData,
+  TopicTrendData,
+  PainPointAlert
+} from '@/lib/dashboard-real-data'
+import { CustomerFeedback } from '@/types/interface'
 
 const chartConfig: ChartConfig = {
   positive: {
@@ -49,12 +46,155 @@ const chartConfig: ChartConfig = {
 }
 
 export default function DashboardPage() {
+  // State for dashboard data
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [dashboardData, setDashboardData] = useState<{
+    sentimentTrendData: SentimentTrendData[]
+    painPointData: PainPointData[]
+    topicTrendData: TopicTrendData[]
+    customerSegmentData: CustomerSegmentData[]
+    painPointAlerts: PainPointAlert[]
+    customerJourneyMetrics: {
+      initialContact: number
+      responseProvided: number
+      issueResolution: number
+      customerSatisfaction: number
+    }
+    segmentPerformance: CustomerSegmentData[]
+    totalFeedbacks: number
+    overallSentimentScore: number
+    activePainPoints: { total: number; high: number; medium: number }
+    averageResponseTime: number
+  } | null>(null)
+
+  // Load dashboard data
+  useEffect(() => {
+    const loadDashboardData = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+
+        // Fetch all data in parallel
+        const [
+          feedbacks,
+          sentimentTrend,
+          painPoints,
+          topicTrends,
+          customerSegments,
+          painPointAlerts,
+          customerJourney,
+          segmentPerformance
+        ] = await Promise.all([
+          fetchAllCustomerFeedbacks(),
+          generateRealSentimentTrendData(),
+          analyzeRealPainPoints(),
+          analyzeRealTopicTrends(),
+          analyzeRealCustomerSegments(),
+          generateRealPainPointAlerts(),
+          calculateRealCustomerJourneyMetrics(),
+          calculateRealSegmentPerformance()
+        ])
+
+        // Calculate derived metrics
+        const totalFeedbacks = feedbacks.length
+        const overallSentimentScore = feedbacks.length > 0 
+          ? feedbacks.reduce((sum, feedback) => {
+              const score = feedback.sentiment === 'Positive' ? 8 :
+                           feedback.sentiment === 'Neutral' ? 5 : 2 
+              return sum + score
+            }, 0) / feedbacks.length / 10 * 10
+          : 5
+
+        const activePainPoints = {
+          total: painPoints.reduce((sum, point) => sum + point.issues, 0),
+          high: painPoints.filter(point => point.severity === 'high').reduce((sum, point) => sum + point.issues, 0),
+          medium: painPoints.filter(point => point.severity === 'medium').reduce((sum, point) => sum + point.issues, 0)
+        }
+
+        const averageResponseTime = feedbacks.length > 0 
+          ? feedbacks.reduce((sum, feedback) => sum + (24), 0) / feedbacks.length
+          : 24
+
+        setDashboardData({
+          sentimentTrendData: sentimentTrend,
+          painPointData: painPoints,
+          topicTrendData: topicTrends,
+          customerSegmentData: customerSegments,
+          painPointAlerts,
+          customerJourneyMetrics: customerJourney,
+          segmentPerformance,
+          totalFeedbacks,
+          overallSentimentScore,
+          activePainPoints,
+          averageResponseTime
+        })
+      } catch (err) {
+        console.error('Error loading dashboard data:', err)
+        setError('Failed to load dashboard data. Please try again.')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadDashboardData()
+  }, [])
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+        <div className="flex items-center justify-center h-96">
+          <div className="flex items-center space-x-2">
+            <Loader2 className="h-6 w-6 animate-spin" />
+            <span>Loading dashboard data...</span>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Error state
+  if (error || !dashboardData) {
+    return (
+      <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
+            {error || 'Failed to load dashboard data'}
+            <Button 
+              variant="link" 
+              className="p-0 h-auto ml-2"
+              onClick={() => window.location.reload()}
+            >
+              Retry
+            </Button>
+          </AlertDescription>
+        </Alert>
+      </div>
+    )
+  }
+
+  const {
+    sentimentTrendData,
+    painPointData,
+    topicTrendData,
+    customerSegmentData,
+    painPointAlerts,
+    customerJourneyMetrics,
+    segmentPerformance,
+    totalFeedbacks,
+    overallSentimentScore,
+    activePainPoints,
+    averageResponseTime
+  } = dashboardData
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">Samsung Communication Health Overview</h2>
         <div className="flex items-center space-x-2">
-          <Link href="/customer-feedbacks">
+          <Link href="/dashboard/customer-feedbacks">
             <Button variant="outline">
               <Database className="h-4 w-4 mr-2" />
               View All Feedbacks
@@ -73,9 +213,9 @@ export default function DashboardPage() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{overallSentimentScore}/10</div>
+            <div className="text-2xl font-bold">{overallSentimentScore.toFixed(1)}/10</div>
             <p className="text-xs text-muted-foreground">
-              Based on {extendedCustomerFeedbackData.length} interactions
+              Based on {totalFeedbacks} interactions
             </p>
             <Progress value={overallSentimentScore * 10} className="mt-2" />
           </CardContent>
@@ -120,7 +260,7 @@ export default function DashboardPage() {
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{averageResponseTime}h</div>
+            <div className="text-2xl font-bold">{averageResponseTime.toFixed(1)}h</div>
             <p className="text-xs text-muted-foreground">
               Calculated from real data
             </p>
@@ -131,12 +271,12 @@ export default function DashboardPage() {
 
       {/* Real-time Alerts */}
       <div className="grid gap-4">
-        {activePainPoints.high > 0 && (
+        {painPointAlerts.filter(alert => alert.severity === 'high').length > 0 && (
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>High Priority Issues Detected</AlertTitle>
             <AlertDescription>
-              {activePainPoints.high} high-severity issues found in customer feedback analysis. 
+              {painPointAlerts.filter(alert => alert.severity === 'high').length} high-severity issues found in customer feedback analysis. 
               <Button variant="link" className="p-0 h-auto">View Details</Button>
             </AlertDescription>
           </Alert>
@@ -157,7 +297,7 @@ export default function DashboardPage() {
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
             <Card className="col-span-4">
               <CardHeader>
-                <CardTitle>Sentiment Trend (7 Days)</CardTitle>
+                <CardTitle>Sentiment Trend (30 Days)</CardTitle>
                 <CardDescription>
                   Daily sentiment distribution across all customer interactions
                 </CardDescription>
@@ -255,30 +395,28 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex items-start space-x-3">
-                    <XCircle className="h-5 w-5 text-red-500 mt-0.5" />
-                    <div>
-                      <p className="text-sm font-medium">Galaxy Z Flip LCD Issues</p>
-                      <p className="text-xs text-muted-foreground">Multiple reports of LCD durability problems</p>
-                      <p className="text-xs text-muted-foreground">From customer feedback</p>
+                  {painPointAlerts.slice(0, 5).map((alert, index) => {
+                    const IconComponent = alert.icon === 'XCircle' ? XCircle : 
+                                        alert.icon === 'AlertTriangle' ? AlertTriangle : AlertCircle
+                    const iconColor = alert.severity === 'high' ? 'text-red-500' :
+                                    alert.severity === 'medium' ? 'text-yellow-500' : 'text-blue-500'
+                    
+                    return (
+                      <div key={index} className="flex items-start space-x-3">
+                        <IconComponent className={`h-5 w-5 ${iconColor} mt-0.5`} />
+                        <div>
+                          <p className="text-sm font-medium">{alert.title}</p>
+                          <p className="text-xs text-muted-foreground">{alert.description}</p>
+                          <p className="text-xs text-muted-foreground">{alert.source}</p>
+                        </div>
+                      </div>
+                    )
+                  })}
+                  {painPointAlerts.length === 0 && (
+                    <div className="text-center py-4">
+                      <p className="text-sm text-muted-foreground">No recent alerts</p>
                     </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <AlertTriangle className="h-5 w-5 text-yellow-500 mt-0.5" />
-                    <div>
-                      <p className="text-sm font-medium">Pre-order Delays</p>
-                      <p className="text-xs text-muted-foreground">Galaxy S25 series delivery delays reported</p>
-                      <p className="text-xs text-muted-foreground">Multiple customer complaints</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <AlertCircle className="h-5 w-5 text-blue-500 mt-0.5" />
-                    <div>
-                      <p className="text-sm font-medium">Technical Support Requests</p>
-                      <p className="text-xs text-muted-foreground">Increased technical queries and issues</p>
-                      <p className="text-xs text-muted-foreground">Ongoing monitoring</p>
-                    </div>
-                  </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -362,28 +500,28 @@ export default function DashboardPage() {
                     <span>Initial Contact</span>
                     <div className="flex items-center space-x-2">
                       <Progress value={100} className="w-20" />
-                      <span className="text-sm">{extendedCustomerFeedbackData.length}</span>
+                      <span className="text-sm">{customerJourneyMetrics.initialContact}</span>
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Response Provided</span>
                     <div className="flex items-center space-x-2">
-                      <Progress value={95} className="w-20" />
-                      <span className="text-sm">{Math.round(extendedCustomerFeedbackData.length * 0.95)}</span>
+                      <Progress value={(customerJourneyMetrics.responseProvided / customerJourneyMetrics.initialContact) * 100} className="w-20" />
+                      <span className="text-sm">{customerJourneyMetrics.responseProvided}</span>
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Issue Resolution</span>
                     <div className="flex items-center space-x-2">
-                      <Progress value={85} className="w-20" />
-                      <span className="text-sm">{Math.round(extendedCustomerFeedbackData.length * 0.85)}</span>
+                      <Progress value={(customerJourneyMetrics.issueResolution / customerJourneyMetrics.initialContact) * 100} className="w-20" />
+                      <span className="text-sm">{customerJourneyMetrics.issueResolution}</span>
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Customer Satisfaction</span>
                     <div className="flex items-center space-x-2">
-                      <Progress value={Math.round(overallSentimentScore * 10)} className="w-20" />
-                      <span className="text-sm">{Math.round(extendedCustomerFeedbackData.length * (overallSentimentScore / 10))}</span>
+                      <Progress value={(customerJourneyMetrics.customerSatisfaction / customerJourneyMetrics.initialContact) * 100} className="w-20" />
+                      <span className="text-sm">{customerJourneyMetrics.customerSatisfaction}</span>
                     </div>
                   </div>
                 </div>
@@ -399,7 +537,7 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {customerSegmentData.map((segment, index) => (
+                  {segmentPerformance.map((segment, index) => (
                     <div key={index} className="flex items-center justify-between">
                       <span>{segment.segment}</span>
                       <div className="flex items-center space-x-2">

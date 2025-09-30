@@ -54,16 +54,7 @@ export default function LoginPage() {
           onSubmit={handleSubmit}
         />
 
-        {/* Sign up link */}
-        <div className="mt-6 text-center text-sm text-muted-foreground">
-          Don&apos;t have an account?{" "}
-          <a
-            href="/register"
-            className="text-primary font-medium hover:underline"
-          >
-            Sign up
-          </a>
-        </div>
+      
       </div>
     </div>
   )
