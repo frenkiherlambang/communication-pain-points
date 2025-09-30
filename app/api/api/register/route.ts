@@ -92,8 +92,8 @@ export async function POST(request: NextRequest) {
       message: data.user?.email_confirmed_at 
         ? "Registrasi berhasil! Anda sudah bisa login" 
         : "Registrasi berhasil! Silakan cek email untuk konfirmasi akun",
-      user: data.user,
-      session: data.session,
+      user: data.user || undefined,
+      session: data.session || undefined,
     };
 
     return NextResponse.json(response, { status: 201 });

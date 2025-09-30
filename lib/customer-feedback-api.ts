@@ -1,5 +1,13 @@
 import { supabase } from './supabase'
-import { CustomerFeedback, CustomerFeedbackCamelCase } from '@/types/interface/customer-feedbacks'
+import { 
+  CustomerFeedback, 
+  CustomerFeedbackCategory,
+  CustomerFeedbackTypeOfPost,
+  CustomerFeedbackTopic,
+  CustomerFeedbackSentiment,
+  CustomerFeedbackSource,
+  CustomerFeedbackStatus
+} from '@/types/interface/customer-feedbacks'
 import { extendedCustomerFeedbackData } from './customer-feedback-data'
 
 export interface CustomerFeedbackFilters {
@@ -12,10 +20,49 @@ export interface CustomerFeedbackFilters {
   searchTerm?: string
 }
 
+// Database row type for customer feedback
+interface DatabaseRow {
+  id?: string
+  ID?: string
+  link?: string
+  Link?: string
+  post_copy?: string
+  'Post Copy'?: string
+  date?: string
+  Date?: string
+  time?: string
+  Time?: string
+  date_responses?: string
+  'Date responses'?: string
+  account_id?: string
+  'Account ID'?: string
+  customer_id?: string
+  'Customer ID'?: string
+  category?: string
+  Category?: string
+  type_of_post?: string
+  'Type of post'?: string
+  topic?: string
+  Topic?: string
+  product?: string
+  Product?: string
+  sentiment?: string
+  Sentiment?: string
+  source?: string
+  Source?: string
+  reply?: string
+  Reply?: string
+  status?: string
+  Status?: string
+  details?: string
+  Details?: string
+  [key: string]: unknown
+}
+
 // Transform database row to CustomerFeedback interface
-export function transformDatabaseRowToCustomerFeedback(row: any): CustomerFeedback {
+export function transformDatabaseRowToCustomerFeedback(row: DatabaseRow): CustomerFeedback {
   return {
-    ID: row.id || row.ID,
+    ID: (row.id || row.ID || '') as string,
     Link: row.link || row.Link || '',
     'Post Copy': row.post_copy || row['Post Copy'] || '',
     Date: row.date || row.Date || '',
@@ -23,14 +70,14 @@ export function transformDatabaseRowToCustomerFeedback(row: any): CustomerFeedba
     'Date responses': row.date_responses || row['Date responses'] || '',
     'Account ID': row.account_id || row['Account ID'] || '',
     'Customer ID': row.customer_id || row['Customer ID'] || '',
-    Category: row.category || row.Category || 'General',
-    'Type of post': row.type_of_post || row['Type of post'] || 'Others',
-    Topic: row.topic || row.Topic || 'Product Info',
+    Category: (row.category || row.Category || 'General') as CustomerFeedbackCategory,
+    'Type of post': (row.type_of_post || row['Type of post'] || 'Others') as CustomerFeedbackTypeOfPost,
+    Topic: (row.topic || row.Topic || 'Product Info') as CustomerFeedbackTopic,
     Product: row.product || row.Product || '',
-    Sentiment: row.sentiment || row.Sentiment || 'Neutral',
-    Source: row.source || row.Source || 'DM Facebook',
+    Sentiment: (row.sentiment || row.Sentiment || 'Neutral') as CustomerFeedbackSentiment,
+    Source: (row.source || row.Source || 'DM Facebook') as CustomerFeedbackSource,
     Reply: row.reply || row.Reply || '',
-    Status: row.status || row.Status || 'Pending',
+    Status: (row.status || row.Status || 'Pending') as CustomerFeedbackStatus,
     Details: row.details || row.Details || ''
   }
 }

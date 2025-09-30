@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, User, Session } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key';
@@ -24,6 +24,6 @@ export interface LoginCredentials {
 export interface AuthResponse {
   success: boolean;
   message: string;
-  user?: any;
-  session?: any;
+  user?: User;
+  session?: Session;
 }

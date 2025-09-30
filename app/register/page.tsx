@@ -5,6 +5,7 @@ import { RegisterForm } from "@/components/shadcn-blocks/register-01/register-fo
 import { useRegister } from "@/hooks/use-register"
 import { useState, FormEvent, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 export default function RegisterPage() {
   const { register, isLoading, error, success } = useRegister()
@@ -34,12 +35,12 @@ export default function RegisterPage() {
       <div className="w-full max-w-sm">
         {/* Logo/Brand */}
         <div className="flex flex-col items-center gap-6 mb-6">
-          <a href="/" className="flex items-center gap-2 font-medium">
+          <Link href="/" className="flex items-center gap-2 font-medium">
             <div className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-md">
               <GalleryVerticalEnd className="size-5" />
             </div>
             <span className="text-xl font-semibold">Communication App</span>
-          </a>
+          </Link>
         </div>
 
         {/* Register Form */}

@@ -8,8 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { ChartContainer, ChartConfig } from '@/components/ui/chart'
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { AlertTriangle, TrendingUp, TrendingDown, Users, MessageSquare, Clock, Target, CheckCircle, XCircle, AlertCircle, Database } from 'lucide-react'
+import { LineChart, Line, AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { AlertTriangle, TrendingUp, Clock, CheckCircle, XCircle, AlertCircle, Database } from 'lucide-react'
 import Link from 'next/link'
 
 // Import real customer feedback data

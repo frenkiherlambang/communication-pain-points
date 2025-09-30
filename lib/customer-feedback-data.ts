@@ -1,4 +1,4 @@
-import { CustomerFeedback, CustomerFeedbackSentiment, CustomerFeedbackTopic, CustomerFeedbackCategory } from '@/types/interface/customer-feedbacks'
+import { CustomerFeedback, CustomerFeedbackSentiment, CustomerFeedbackCategory } from '@/types/interface/customer-feedbacks'
 
 // Sample customer feedback data extracted from SQL
 export const customerFeedbackData: CustomerFeedback[] = [
