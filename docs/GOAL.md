@@ -1,8 +1,8 @@
-We are Samsung’s marketing team monitoring how customers interact with Samsung Phone Products. Our priority is to identify pain points in customer communications, from pre-purchase inquiries to after-sales support, so we can resolve frustrations, strengthen trust, and improve brand perception.
+SIRENE (System for Intelligence Research & Engagement Analytics) is our platform for monitoring how customers interact with our products. Our priority is to identify pain points in customer communications, from pre-purchase inquiries to after-sales support, so we can resolve frustrations, strengthen trust, and improve brand perception.
 
 
 
-RESEARCH FOCUS (Communication Potential in SIRENE):
+SIRENE RESEARCH FOCUS:
 
 1. Pain Point Detection:
    - Frustrations in customer service (delays, unclear answers, robotic responses)

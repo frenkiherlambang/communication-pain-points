@@ -10,14 +10,14 @@ export default function Home() {
       <section className="container mx-auto px-4 py-16 text-center">
         <div className="max-w-4xl mx-auto">
           <Badge variant="outline" className="mb-4 text-blue-600 border-blue-600">
-            Samsung Marketing Intelligence
+            SIRENE Platform
           </Badge>
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-            Communication Pain Points
-            <span className="block text-blue-600">Monitoring System</span>
+            SIRENE
+            <span className="block text-blue-600">Communication Intelligence</span>
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-            Identify and resolve customer communication frustrations across Samsung Phone Products. 
+            Identify and resolve customer communication frustrations across all your products. 
             From pre-purchase inquiries to after-sales support, we strengthen trust and improve brand perception.
           </p>
           <div className="flex gap-4 justify-center flex-col sm:flex-row">
@@ -35,10 +35,10 @@ export default function Home() {
       <section className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-            Research Focus Areas
+            SIRENE Research Focus Areas
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-300">
-            Comprehensive analysis of communication potential in SIRENE
+            Comprehensive analysis of communication potential and pain points
           </p>
         </div>
 
@@ -124,7 +124,7 @@ export default function Home() {
             Ready to Transform Customer Communications?
           </h3>
           <p className="text-gray-600 dark:text-gray-300 mb-6">
-            Join Samsung&apos;s marketing intelligence platform and start identifying communication pain points today.
+            Join SIRENE and start identifying communication pain points with advanced intelligence today.
           </p>
           <div className="flex gap-4 justify-center flex-col sm:flex-row">
             <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">
@@ -139,7 +139,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="container mx-auto px-4 py-8 text-center text-gray-600 dark:text-gray-400">
-        <p>&copy; 2024 Samsung Marketing Intelligence. All rights reserved.</p>
+        <p>&copy; 2024 SIRENE - Communication Intelligence Platform. All rights reserved.</p>
       </footer>
     </div>
   );

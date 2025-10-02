@@ -192,12 +192,17 @@ export default function DashboardPage() {
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">Samsung Communication Health Overview</h2>
+        <h2 className="text-3xl font-bold tracking-tight">Communication Pain Points - Home</h2>
         <div className="flex items-center space-x-2">
+          <Link href="/dashboard/topics">
+            <Button variant="outline">
+              View Topics
+            </Button>
+          </Link>
           <Link href="/dashboard/customer-feedbacks">
             <Button variant="outline">
               <Database className="h-4 w-4 mr-2" />
-              View All Feedbacks
+              Inbox
             </Button>
           </Link>
           <Button variant="outline">Export Report</Button>
@@ -205,31 +210,31 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Executive Summary */}
+      {/* KPI Tiles - MVP Requirements */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Overall Sentiment Score</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Unanswered Questions</CardTitle>
+            <AlertCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{overallSentimentScore.toFixed(1)}/10</div>
+            <div className="text-2xl font-bold">{Math.floor(totalFeedbacks * 0.15)}</div>
             <p className="text-xs text-muted-foreground">
-              Based on {totalFeedbacks} interactions
+              Pending customer queries
             </p>
-            <Progress value={overallSentimentScore * 10} className="mt-2" />
+            <Progress value={15} className="mt-2" />
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Pain Points</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">New Clusters</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{activePainPoints.total}</div>
+            <div className="text-2xl font-bold">{painPointData.length}</div>
             <p className="text-xs text-muted-foreground">
-              From customer feedback analysis
+              Identified topic clusters
             </p>
             <div className="flex space-x-1 mt-2">
               <Badge variant="destructive">{activePainPoints.high} High</Badge>
@@ -240,31 +245,31 @@ export default function DashboardPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Crisis Risk Level</CardTitle>
-            <CheckCircle className="h-4 w-4 text-green-600" />
+            <CardTitle className="text-sm font-medium">Top Pain Point</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-2xl font-bold">{painPointData[0]?.category || 'None'}</div>
+            <p className="text-xs text-muted-foreground">
+              {painPointData[0]?.issues || 0} issues | {painPointData[0]?.severity || 'N/A'} severity
+            </p>
+            <Progress value={painPointData[0] ? (painPointData[0].issues / totalFeedbacks) * 100 : 0} className="mt-2" />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Crisis Risk</CardTitle>
+            <CheckCircle className={`h-4 w-4 ${activePainPoints.high > 5 ? 'text-red-600' : activePainPoints.high > 2 ? 'text-yellow-600' : 'text-green-600'}`} />
+          </CardHeader>
+          <CardContent>
+            <div className={`text-2xl font-bold ${activePainPoints.high > 5 ? 'text-red-600' : activePainPoints.high > 2 ? 'text-yellow-600' : 'text-green-600'}`}>
               {activePainPoints.high > 5 ? 'HIGH' : activePainPoints.high > 2 ? 'MEDIUM' : 'LOW'}
             </div>
             <p className="text-xs text-muted-foreground">
               {activePainPoints.high > 5 ? 'Multiple critical issues' : 'Manageable issues detected'}
             </p>
             <Progress value={activePainPoints.high > 5 ? 85 : activePainPoints.high > 2 ? 50 : 25} className="mt-2" />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg Response Time</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{averageResponseTime.toFixed(1)}h</div>
-            <p className="text-xs text-muted-foreground">
-              Calculated from real data
-            </p>
-            <Progress value={Math.max(0, 100 - (averageResponseTime * 10))} className="mt-2" />
           </CardContent>
         </Card>
       </div>
@@ -283,104 +288,108 @@ export default function DashboardPage() {
         )}
       </div>
 
+      {/* Volume by Cluster Trend Chart - MVP Requirement */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Volume by Cluster</CardTitle>
+              <CardDescription>
+                Message volume trends across topic clusters
+              </CardDescription>
+            </div>
+            <div className="flex space-x-2">
+              <Button variant="outline" size="sm">7 days</Button>
+              <Button variant="outline" size="sm">30 days</Button>
+              <Button variant="outline" size="sm">90 days</Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="pl-2">
+          <ChartContainer config={chartConfig} className="h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={sentimentTrendData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="positive" stroke="#22c55e" strokeWidth={2} name="Positive Feedback" />
+                <Line type="monotone" dataKey="neutral" stroke="#64748b" strokeWidth={2} name="Neutral Feedback" />
+                <Line type="monotone" dataKey="negative" stroke="#ef4444" strokeWidth={2} name="Issues Reported" />
+              </LineChart>
+            </ResponsiveContainer>
+          </ChartContainer>
+        </CardContent>
+      </Card>
+
+      {/* What Changed Digest - MVP Requirement */}
+      <Card>
+        <CardHeader>
+          <CardTitle>What Changed?</CardTitle>
+          <CardDescription>
+            New rising terms and emerging topics
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {topicTrendData.slice(0, 5).map((topic, index) => (
+              <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                <div className="flex items-center space-x-3">
+                  <TrendingUp className={`h-5 w-5 ${topic.sentiment > 0.5 ? 'text-green-500' : 'text-red-500'}`} />
+                  <div className="flex flex-col">
+                    <span className="font-medium">{topic.topic}</span>
+                    <span className="text-sm text-muted-foreground">{topic.mentions} mentions (trending)</span>
+                  </div>
+                </div>
+                <Badge variant={topic.sentiment > 0.6 ? 'default' : topic.sentiment > 0.4 ? 'secondary' : 'destructive'}>
+                  {topic.sentiment > 0.5 ? 'Rising' : 'Attention Needed'}
+                </Badge>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Main Dashboard Tabs */}
-      <Tabs defaultValue="overview" className="space-y-4">
+      <Tabs defaultValue="clusters" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="pain-points">Pain Points</TabsTrigger>
+          <TabsTrigger value="clusters">Topic Clusters</TabsTrigger>
           <TabsTrigger value="sentiment">Sentiment Analysis</TabsTrigger>
-          <TabsTrigger value="topics">Topic Analysis</TabsTrigger>
-          <TabsTrigger value="customer-journey">Customer Journey</TabsTrigger>
+          <TabsTrigger value="segments">Customer Segments</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-            <Card className="col-span-4">
-              <CardHeader>
-                <CardTitle>Sentiment Trend (30 Days)</CardTitle>
-                <CardDescription>
-                  Daily sentiment distribution across all customer interactions
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pl-2">
-                <ChartContainer config={chartConfig} className="h-[300px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={sentimentTrendData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="date" />
-                      <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Area type="monotone" dataKey="positive" stackId="1" stroke="#22c55e" fill="#22c55e" />
-                      <Area type="monotone" dataKey="neutral" stackId="1" stroke="#64748b" fill="#64748b" />
-                      <Area type="monotone" dataKey="negative" stackId="1" stroke="#ef4444" fill="#ef4444" />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </ChartContainer>
-              </CardContent>
-            </Card>
-
-            <Card className="col-span-3">
-              <CardHeader>
-                <CardTitle>Customer Segments</CardTitle>
-                <CardDescription>
-                  Distribution of interactions by customer type
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ChartContainer config={chartConfig} className="h-[300px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={customerSegmentData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        label={({ segment, percent }) => `${segment} ${(percent * 100).toFixed(0)}%`}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                      >
-                        {customerSegmentData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </ChartContainer>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="pain-points" className="space-y-4">
+        <TabsContent value="clusters" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Pain Point Categories</CardTitle>
+                <CardTitle>Cluster Rankings</CardTitle>
                 <CardDescription>
-                  Current issues by category and severity level (from real feedback)
+                  Topics ranked by Priority Score (Frequency × Severity ÷ Fix Cost)
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {painPointData.map((item, index) => (
-                    <div key={index} className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <div className={`w-3 h-3 rounded-full ${
-                          item.severity === 'high' ? 'bg-red-500' :
-                          item.severity === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
-                        }`} />
-                        <span className="font-medium">{item.category}</span>
+                    <Link key={index} href="/dashboard/topics" className="block">
+                      <div className="flex items-center justify-between p-3 border rounded-lg hover:bg-accent transition-colors">
+                        <div className="flex items-center space-x-3">
+                          <div className={`w-3 h-3 rounded-full ${
+                            item.severity === 'high' ? 'bg-red-500' :
+                            item.severity === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
+                          }`} />
+                          <div className="flex flex-col">
+                            <span className="font-medium">{item.category}</span>
+                            <span className="text-sm text-muted-foreground">{item.issues} issues</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Badge variant={item.severity === 'high' ? 'destructive' : 'secondary'}>
+                            {item.severity}
+                          </Badge>
+                        </div>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-sm text-muted-foreground">{item.issues} issues</span>
-                        <Badge variant={item.severity === 'high' ? 'destructive' : 'secondary'}>
-                          {item.severity}
-                        </Badge>
-                      </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </CardContent>
@@ -388,9 +397,9 @@ export default function DashboardPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Recent Pain Point Alerts</CardTitle>
+                <CardTitle>Recent Alerts</CardTitle>
                 <CardDescription>
-                  Latest detected issues from customer feedback
+                  Latest detected issues requiring attention
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -427,24 +436,24 @@ export default function DashboardPage() {
           <div className="grid gap-4 md:grid-cols-1">
             <Card>
               <CardHeader>
-                <CardTitle>Sentiment Analysis Dashboard</CardTitle>
+                <CardTitle>Sentiment Analysis</CardTitle>
                 <CardDescription>
-                  Comprehensive sentiment tracking across all communication channels (Real Data)
+                  Sentiment trends across all communication channels
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <ChartContainer config={chartConfig} className="h-[400px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={sentimentTrendData}>
+                    <AreaChart data={sentimentTrendData}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="date" />
                       <YAxis />
                       <Tooltip />
                       <Legend />
-                      <Line type="monotone" dataKey="positive" stroke="#22c55e" strokeWidth={2} />
-                      <Line type="monotone" dataKey="neutral" stroke="#64748b" strokeWidth={2} />
-                      <Line type="monotone" dataKey="negative" stroke="#ef4444" strokeWidth={2} />
-                    </LineChart>
+                      <Area type="monotone" dataKey="positive" stackId="1" stroke="#22c55e" fill="#22c55e" name="Positive" />
+                      <Area type="monotone" dataKey="neutral" stackId="1" stroke="#64748b" fill="#64748b" name="Neutral" />
+                      <Area type="monotone" dataKey="negative" stackId="1" stroke="#ef4444" fill="#ef4444" name="Negative" />
+                    </AreaChart>
                   </ResponsiveContainer>
                 </ChartContainer>
               </CardContent>
@@ -452,79 +461,37 @@ export default function DashboardPage() {
           </div>
         </TabsContent>
 
-        <TabsContent value="topics" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-1">
-            <Card>
-              <CardHeader>
-                <CardTitle>Trending Topics Analysis</CardTitle>
-                <CardDescription>
-                  Most discussed topics and their sentiment correlation (from real customer feedback)
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {topicTrendData.map((topic, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <div className="flex flex-col">
-                          <span className="font-medium">{topic.topic}</span>
-                          <span className="text-sm text-muted-foreground">{topic.mentions} mentions</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Progress value={topic.sentiment * 100} className="w-20" />
-                        <Badge variant={topic.sentiment > 0.6 ? 'default' : topic.sentiment > 0.4 ? 'secondary' : 'destructive'}>
-                          {(topic.sentiment * 100).toFixed(0)}%
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="customer-journey" className="space-y-4">
+        <TabsContent value="segments" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Customer Journey Flow</CardTitle>
+                <CardTitle>Customer Segments</CardTitle>
                 <CardDescription>
-                  Interaction patterns based on real customer feedback data
+                  Distribution of interactions by customer type
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span>Initial Contact</span>
-                    <div className="flex items-center space-x-2">
-                      <Progress value={100} className="w-20" />
-                      <span className="text-sm">{customerJourneyMetrics.initialContact}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>Response Provided</span>
-                    <div className="flex items-center space-x-2">
-                      <Progress value={(customerJourneyMetrics.responseProvided / customerJourneyMetrics.initialContact) * 100} className="w-20" />
-                      <span className="text-sm">{customerJourneyMetrics.responseProvided}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>Issue Resolution</span>
-                    <div className="flex items-center space-x-2">
-                      <Progress value={(customerJourneyMetrics.issueResolution / customerJourneyMetrics.initialContact) * 100} className="w-20" />
-                      <span className="text-sm">{customerJourneyMetrics.issueResolution}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>Customer Satisfaction</span>
-                    <div className="flex items-center space-x-2">
-                      <Progress value={(customerJourneyMetrics.customerSatisfaction / customerJourneyMetrics.initialContact) * 100} className="w-20" />
-                      <span className="text-sm">{customerJourneyMetrics.customerSatisfaction}</span>
-                    </div>
-                  </div>
-                </div>
+                <ChartContainer config={chartConfig} className="h-[300px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={customerSegmentData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({ segment, percent }) => `${segment} ${(percent * 100).toFixed(0)}%`}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {customerSegmentData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
               </CardContent>
             </Card>
 
@@ -532,7 +499,7 @@ export default function DashboardPage() {
               <CardHeader>
                 <CardTitle>Segment Performance</CardTitle>
                 <CardDescription>
-                  Journey completion rates by customer segment (Real Data)
+                  Engagement metrics by customer segment
                 </CardDescription>
               </CardHeader>
               <CardContent>

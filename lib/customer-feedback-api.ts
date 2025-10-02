@@ -2,7 +2,7 @@ import { supabase, isSupabaseConfigured } from './supabase'
 import { 
   CustomerFeedback, 
   CustomerFeedbackSentiment, 
-  CustomerFeedbackTopic, 
+  CustomerFeedbackTopicLegacy, 
   CustomerFeedbackCategory,
   CustomerFeedbackTypeOfPost,
   CustomerFeedbackSource,
@@ -203,7 +203,7 @@ const sampleCustomerFeedbacks: CustomerFeedback[] = [
   {
     ID: '00000000-0000-0000-0000-000000000010',
     Link: '',
-    post_copy: 'Terima kasih Samsung Indonesia, pelayanan toko offline sangat memuaskan!',
+    post_copy: 'Terima kasih, pelayanan toko offline sangat memuaskan!',
     date: '2025-02-24',
     time: '17:55:00',
     dateResponses: '2025-02-24',
@@ -235,7 +235,7 @@ interface DatabaseFeedbackRow {
   customer_id?: string;
   category: CustomerFeedbackCategory;
   type_of_post: CustomerFeedbackTypeOfPost;
-  topic: CustomerFeedbackTopic;
+  topic: CustomerFeedbackTopicLegacy;
   product?: string;
   sentiment: CustomerFeedbackSentiment;
   source: CustomerFeedbackSource;
@@ -261,7 +261,7 @@ function transformDatabaseRow(row: DatabaseFeedbackRow): CustomerFeedback {
     customerId: row.customer_id || '',
     category: row.category as CustomerFeedbackCategory,
     typeOfPost: row.type_of_post,
-    topic: row.topic as CustomerFeedbackTopic,
+    topic: row.topic as CustomerFeedbackTopicLegacy,
     product: row.product || '',
     sentiment: row.sentiment as CustomerFeedbackSentiment,
     source: row.source,
@@ -352,8 +352,8 @@ export async function fetchCustomerFeedbacks(
 
     if (filters.searchTerm && filters.searchTerm.trim() !== '') {
       // Use text search for multiple columns
-      const searchTerm = filters.searchTerm.trim()
-      query = query.or(`post_copy.ilike.%${searchTerm}%,account_id.ilike.%${searchTerm}%,product.ilike.%${searchTerm}%,reply.ilike.%${searchTerm}%,details.ilike.%${searchTerm}%`)
+      const searchTerm = `%${filters.searchTerm.trim()}%`
+      query = query.or(`post_copy.ilike.${searchTerm},account_id.ilike.${searchTerm},product.ilike.${searchTerm},reply.ilike.${searchTerm},details.ilike.${searchTerm}`)
     }
 
     // Apply pagination if specified

@@ -8,7 +8,7 @@ export * from './customer-feedbacks';
 
 // Re-export commonly used types for convenience
 export type { User, CreateUserInput, UpdateUserInput } from './users';
-export type { Topic, CreateTopicInput, UpdateTopicInput } from './topics';
+export type { Topic, CreateTopic, UpdateTopic } from './topics';
 export type { 
   Interaction, 
   CreateInteractionInput, 
@@ -31,7 +31,7 @@ export type {
   CustomerFeedbackCamelCase,
   CustomerFeedbackCategory,
   CustomerFeedbackTypeOfPost,
-  CustomerFeedbackTopic,
+  CustomerFeedbackTopicLegacy,
   CustomerFeedbackSentiment,
   CustomerFeedbackSource,
   CustomerFeedbackStatus,

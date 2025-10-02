@@ -1,8 +1,8 @@
-# Dashboard Implementation Plan
-## Samsung Customer Communication Pain Points Monitoring
+# SIRENE Dashboard Implementation Plan
+## Customer Communication Pain Points Monitoring
 
 ### 1. Overview
-Dashboard untuk monitoring dan analisis pain points dalam komunikasi customer Samsung, dengan fokus pada deteksi frustrasi, identifikasi peluang perbaikan, dan pencegahan krisis komunikasi.
+SIRENE Dashboard untuk monitoring dan analisis pain points dalam komunikasi customer, dengan fokus pada deteksi frustrasi, identifikasi peluang perbaikan, dan pencegahan krisis komunikasi.
 
 ### 2. Core Requirements (berdasarkan GOAL.md)
 
@@ -42,7 +42,7 @@ Dashboard untuk monitoring dan analisis pain points dalam komunikasi customer Sa
 #### 4.1 Executive Summary Dashboard
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│ SAMSUNG COMMUNICATION HEALTH OVERVIEW                      │
+│ SIRENE COMMUNICATION HEALTH OVERVIEW                        │
 ├─────────────────────────────────────────────────────────────┤
 │ [Pain Point Alert] [Sentiment Trend] [Crisis Risk Level]   │
 │                                                             │

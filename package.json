@@ -1,6 +1,7 @@
 {
-  "name": "nextjs-2025",
+  "name": "sirene-communication-intelligence",
   "version": "0.1.0",
+  "description": "SIRENE - System for Intelligence Research & Engagement Analytics. A platform for monitoring and analyzing customer communication pain points.",
   "private": true,
   "packageManager": "pnpm@10.17.0",
   "scripts": {

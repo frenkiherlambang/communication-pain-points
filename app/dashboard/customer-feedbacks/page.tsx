@@ -22,10 +22,20 @@ export default function CustomerFeedbacksPage() {
   const [error, setError] = useState<string | null>(null)
   const [isUsingFallback, setIsUsingFallback] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
   const [sentimentFilter, setSentimentFilter] = useState<string>('all')
   const [topicFilter, setTopicFilter] = useState<string>('all')
   const [categoryFilter, setCategoryFilter] = useState<string>('all')
   const [selectedFeedback, setSelectedFeedback] = useState<CustomerFeedback | null>(null)
+
+  // Debounce search term to avoid API calls on every keystroke
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm)
+    }, 500) // Wait 500ms after user stops typing
+
+    return () => clearTimeout(timer)
+  }, [searchTerm])
 
   const loadCustomerFeedbacks = useCallback(async () => {
     try {
@@ -36,7 +46,7 @@ export default function CustomerFeedbacksPage() {
         sentiment: sentimentFilter !== 'all' ? sentimentFilter : undefined,
         topic: topicFilter !== 'all' ? topicFilter : undefined,
         category: categoryFilter !== 'all' ? categoryFilter : undefined,
-        searchTerm: searchTerm || undefined
+        searchTerm: debouncedSearchTerm || undefined
       }
 
       const { data, error: apiError, isUsingFallback: fallback } = await fetchCustomerFeedbacks(filters)
@@ -50,19 +60,12 @@ export default function CustomerFeedbacksPage() {
     } finally {
       setLoading(false)
     }
-  }, [sentimentFilter, topicFilter, categoryFilter, searchTerm])
+  }, [sentimentFilter, topicFilter, categoryFilter, debouncedSearchTerm])
 
   // Fetch data from Supabase or use sample data
   useEffect(() => {
     loadCustomerFeedbacks()
   }, [loadCustomerFeedbacks])
-
-  // Apply filters when they change
-  useEffect(() => {
-    if (!loading) {
-      loadCustomerFeedbacks()
-    }
-  }, [loadCustomerFeedbacks, loading])
 
   // Use feedbacks directly since filtering is now done server-side
   const filteredFeedbacks = feedbacks
@@ -322,6 +325,7 @@ export default function CustomerFeedbacksPage() {
               variant="outline" 
               onClick={() => {
                 setSearchTerm('')
+                setDebouncedSearchTerm('')
                 setSentimentFilter('all')
                 setTopicFilter('all')
                 setCategoryFilter('all')
