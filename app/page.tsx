@@ -101,7 +101,7 @@ export default function Home() {
               <h3 className="text-purple-700 dark:text-purple-400 font-semibold text-lg">Prioritize</h3>
             </div>
             <p className="text-sm text-slate-700 dark:text-gray-300">
-              Score by Frequency × Severity ÷ Fix Cost. Focus your team's attention on the issues that matter most and deliver the highest impact.
+              Score by Frequency × Severity ÷ Fix Cost. Focus your team&apos;s attention on the issues that matter most and deliver the highest impact.
             </p>
           </SpotlightCard>
 

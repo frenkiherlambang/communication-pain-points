@@ -9,7 +9,7 @@ import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { ChartContainer, ChartConfig } from '@/components/ui/chart'
 import { LineChart, Line, AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { AlertTriangle, TrendingUp, Clock, CheckCircle, XCircle, AlertCircle, Database, Loader2 } from 'lucide-react'
+import { AlertTriangle, TrendingUp, CheckCircle, XCircle, AlertCircle, Database, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 
 // Import real customer feedback data functions
@@ -183,12 +183,9 @@ export default function DashboardPage() {
     topicTrendData,
     customerSegmentData,
     painPointAlerts,
-    customerJourneyMetrics,
     segmentPerformance,
     totalFeedbacks,
-    overallSentimentScore,
     activePainPoints,
-    averageResponseTime
   } = dashboardData
 
   // Filter sentiment trend data based on selected period
