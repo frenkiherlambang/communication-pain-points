@@ -49,6 +49,7 @@ export default function DashboardPage() {
   // State for dashboard data
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [trendPeriod, setTrendPeriod] = useState<7 | 30 | 90>(30) // Default to 30 days
   const [dashboardData, setDashboardData] = useState<{
     sentimentTrendData: SentimentTrendData[]
     painPointData: PainPointData[]
@@ -189,6 +190,10 @@ export default function DashboardPage() {
     activePainPoints,
     averageResponseTime
   } = dashboardData
+
+  // Filter sentiment trend data based on selected period
+  const filteredSentimentData = sentimentTrendData.slice(-trendPeriod)
+
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
@@ -299,16 +304,34 @@ export default function DashboardPage() {
               </CardDescription>
             </div>
             <div className="flex space-x-2">
-              <Button variant="outline" size="sm">7 days</Button>
-              <Button variant="outline" size="sm">30 days</Button>
-              <Button variant="outline" size="sm">90 days</Button>
+              <Button 
+                variant={trendPeriod === 7 ? "default" : "outline"} 
+                size="sm"
+                onClick={() => setTrendPeriod(7)}
+              >
+                7 Days
+              </Button>
+              <Button 
+                variant={trendPeriod === 30 ? "default" : "outline"} 
+                size="sm"
+                onClick={() => setTrendPeriod(30)}
+              >
+                30 Days
+              </Button>
+              <Button 
+                variant={trendPeriod === 90 ? "default" : "outline"} 
+                size="sm"
+                onClick={() => setTrendPeriod(90)}
+              >
+                90 Days
+              </Button>
             </div>
           </div>
         </CardHeader>
-        <CardContent className="pl-2">
-          <ChartContainer config={chartConfig} className="h-[300px]">
+        <CardContent>
+          <ChartContainer config={chartConfig} className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={sentimentTrendData}>
+              <LineChart data={filteredSentimentData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
                 <YAxis />

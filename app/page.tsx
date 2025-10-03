@@ -1,136 +1,137 @@
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import SpotlightCard from "@/components/SpotlightCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import PrismBackground from "@/components/prism-background";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen relative">
+      <PrismBackground />
+      
+      {/* Theme Toggle Button */}
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
+
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-16 text-center">
-        <div className="max-w-4xl mx-auto">
-          <Badge variant="outline" className="mb-4 text-blue-600 border-blue-600">
+        <div className="max-w-4xl mx-auto backdrop-blur-sm bg-white/30 dark:bg-black/30 rounded-3xl p-8">
+          <Badge variant="outline" className="mb-4 text-purple-700 border-purple-700 bg-white/80 dark:bg-black/50 dark:text-purple-400 dark:border-purple-400">
             SIRENE Platform
           </Badge>
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+          <h1 className="text-4xl md:text-6xl font-bold text-slate-900 dark:text-white mb-6 drop-shadow-lg">
             SIRENE
-            <span className="block text-blue-600">Communication Intelligence</span>
+            <span className="block text-purple-700 dark:text-purple-400">Communication Intelligence</span>
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
+          <p className="text-xl text-slate-700 dark:text-gray-200 mb-8 max-w-3xl mx-auto drop-shadow-md">
             Identify and resolve customer communication frustrations across all your products. 
             From pre-purchase inquiries to after-sales support, we strengthen trust and improve brand perception.
           </p>
           <div className="flex gap-4 justify-center flex-col sm:flex-row">
-            <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">
+            <Button asChild size="lg" className="bg-purple-600 hover:bg-purple-700">
               <Link href="/login">Access Dashboard</Link>
             </Button>
-            <Button asChild variant="outline" size="lg">
+            <Button asChild variant="outline" size="lg" className="border-purple-600 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-950">
               <Link href="/register">Get Started</Link>
             </Button>
           </div>
         </div>
       </section>
 
+      {/* Video Demo Section */}
+      <section className="container mx-auto px-4 py-16">
+        <div className="max-w-5xl mx-auto">
+          
+          
+          <div className="relative backdrop-blur-sm bg-white/95 dark:bg-neutral-900/95 rounded-3xl  shadow-2xl border-2 border-purple-300 dark:border-purple-700">
+            <video 
+              className="w-full aspect-video h-auto rounded-2xl shadow-lg"
+              controls
+              autoPlay
+              preload="metadata"
+              poster="/video_landing.mp4"
+            >
+              <source src="/video_landing.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section className="container mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-            SIRENE Research Focus Areas
+        <div className="text-center mb-12 backdrop-blur-sm bg-white/20 dark:bg-black/20 rounded-2xl p-6 max-w-3xl mx-auto">
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4 drop-shadow-lg">
+            How SIRENE Works
           </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-300">
-            Comprehensive analysis of communication potential and pain points
+          <p className="text-lg text-slate-700 dark:text-gray-200 drop-shadow-md">
+            Four powerful steps to transform customer feedback into action
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Pain Point Detection */}
-          <Card className="border-red-200 hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="text-red-600 flex items-center gap-2">
-                <span className="text-2xl">🔍</span>
-                Pain Point Detection
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="text-sm space-y-2">
-                <div>• Customer service frustrations</div>
-                <div>• Product information confusion</div>
-                <div>• Lack of personalization</div>
-                <div>• Expectation vs. response gaps</div>
-              </CardDescription>
-            </CardContent>
-          </Card>
+          {/* Listen */}
+          <SpotlightCard spotlightColor="rgba(147, 51, 234, 0.25)" className="bg-white/95 dark:bg-neutral-900/95 backdrop-blur-sm border-purple-300 hover:shadow-xl transition-shadow">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-2xl">👂</span>
+              <h3 className="text-purple-700 dark:text-purple-400 font-semibold text-lg">Listen</h3>
+            </div>
+            <p className="text-sm text-slate-700 dark:text-gray-300">
+              Pull raw feedback through CSV upload. Collect all customer messages, questions, and concerns from your communication channels in one place.
+            </p>
+          </SpotlightCard>
 
-          {/* Crisis Triggers */}
-          <Card className="border-orange-200 hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="text-orange-600 flex items-center gap-2">
-                <span className="text-2xl">⚠️</span>
-                Crisis Triggers
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="text-sm space-y-2">
-                <div>• Negative sentiment spikes</div>
-                <div>• Service failure communications</div>
-                <div>• Viral complaint monitoring</div>
-                <div>• Systemic issue identification</div>
-              </CardDescription>
-            </CardContent>
-          </Card>
+          {/* Cluster */}
+          <SpotlightCard spotlightColor="rgba(147, 51, 234, 0.25)" className="bg-white/95 dark:bg-neutral-900/95 backdrop-blur-sm border-purple-300 hover:shadow-xl transition-shadow">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-2xl">🔄</span>
+              <h3 className="text-purple-700 dark:text-purple-400 font-semibold text-lg">Cluster</h3>
+            </div>
+            <p className="text-sm text-slate-700 dark:text-gray-300">
+              Auto-group messages into themes (e.g., Installment unclear, Preorder delays). AI identifies patterns and common topics across your feedback.
+            </p>
+          </SpotlightCard>
 
-          {/* Opportunity Identification */}
-          <Card className="border-green-200 hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="text-green-600 flex items-center gap-2">
-                <span className="text-2xl">💡</span>
-                Opportunities
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="text-sm space-y-2">
-                <div>• FAQ improvement insights</div>
-                <div>• Campaign messaging clarity</div>
-                <div>• Channel optimization</div>
-                <div>• Response speed enhancement</div>
-              </CardDescription>
-            </CardContent>
-          </Card>
+          {/* Prioritize */}
+          <SpotlightCard spotlightColor="rgba(147, 51, 234, 0.25)" className="bg-white/95 dark:bg-neutral-900/95 backdrop-blur-sm border-purple-300 hover:shadow-xl transition-shadow">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-2xl">📊</span>
+              <h3 className="text-purple-700 dark:text-purple-400 font-semibold text-lg">Prioritize</h3>
+            </div>
+            <p className="text-sm text-slate-700 dark:text-gray-300">
+              Score by Frequency × Severity ÷ Fix Cost. Focus your team's attention on the issues that matter most and deliver the highest impact.
+            </p>
+          </SpotlightCard>
 
-          {/* Actionable Outputs */}
-          <Card className="border-blue-200 hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="text-blue-600 flex items-center gap-2">
-                <span className="text-2xl">📊</span>
-                Actionable Outputs
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="text-sm space-y-2">
-                <div>• Content plan inputs</div>
-                <div>• Campaign brief insights</div>
-                <div>• Communication recommendations</div>
-                <div>• Platform usage optimization</div>
-              </CardDescription>
-            </CardContent>
-          </Card>
+          {/* Act */}
+          <SpotlightCard spotlightColor="rgba(147, 51, 234, 0.25)" className="bg-white/95 dark:bg-neutral-900/95 backdrop-blur-sm border-purple-300 hover:shadow-xl transition-shadow">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-2xl">🚀</span>
+              <h3 className="text-purple-700 dark:text-purple-400 font-semibold text-lg">Act</h3>
+            </div>
+            <p className="text-sm text-slate-700 dark:text-gray-300">
+              Spin a Campaign Brief, FAQ/Helpcard, or Fix task from a cluster. Turn insights into concrete actions that improve customer experience.
+            </p>
+          </SpotlightCard>
         </div>
       </section>
 
       {/* CTA Section */}
       <section className="container mx-auto px-4 py-16">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center max-w-4xl mx-auto">
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+        <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-2xl shadow-xl p-8 text-center max-w-4xl mx-auto border border-purple-200 dark:border-purple-800">
+          <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4 drop-shadow-md">
             Ready to Transform Customer Communications?
           </h3>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">
+          <p className="text-slate-700 dark:text-gray-200 mb-6">
             Join SIRENE and start identifying communication pain points with advanced intelligence today.
           </p>
           <div className="flex gap-4 justify-center flex-col sm:flex-row">
-            <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">
+            <Button asChild size="lg" className="bg-purple-600 hover:bg-purple-700">
               <Link href="/dashboard">View Dashboard</Link>
             </Button>
-            <Button asChild variant="outline" size="lg">
+            <Button asChild variant="outline" size="lg" className="border-purple-600 text-purple-700 hover:bg-purple-50 dark:text-purple-400 dark:border-purple-400 dark:hover:bg-purple-950">
               <Link href="/dashboard/customer-feedbacks">Analyze Feedbacks</Link>
             </Button>
           </div>
@@ -138,8 +139,10 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="container mx-auto px-4 py-8 text-center text-gray-600 dark:text-gray-400">
-        <p>&copy; 2024 SIRENE - Communication Intelligence Platform. All rights reserved.</p>
+      <footer className="container mx-auto px-4 py-8 text-center">
+        <div className="backdrop-blur-sm bg-white/20 dark:bg-black/20 rounded-xl p-4 inline-block">
+          <p className="text-slate-700 dark:text-gray-300 drop-shadow-md">&copy; 2024 SIRENE - Communication Intelligence Platform. All rights reserved.</p>
+        </div>
       </footer>
     </div>
   );

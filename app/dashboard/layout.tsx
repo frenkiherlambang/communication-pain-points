@@ -1,8 +1,8 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { 
@@ -12,7 +12,8 @@ import {
   LogOut, 
   User,
   Menu,
-  X
+  X,
+  Loader2
 } from 'lucide-react'
 import {
   DropdownMenu,
@@ -23,6 +24,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { createClient, signOut, getUser } from '@/lib/auth-client'
+import type { User as SupabaseUser, Session, AuthChangeEvent } from '@supabase/supabase-js'
 
 interface NavItem {
   title: string
@@ -58,12 +61,72 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
+  const router = useRouter()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [user, setUser] = useState<SupabaseUser | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  const handleLogout = () => {
-    // TODO: Implement logout logic
-    console.log('Logout clicked')
-    window.location.href = '/'
+  // Check authentication status on mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const currentUser = await getUser()
+        if (!currentUser) {
+          router.push('/login')
+          return
+        }
+        setUser(currentUser)
+      } catch (error) {
+        console.error('Auth check failed:', error)
+        router.push('/login')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    checkAuth()
+
+    // Subscribe to auth changes
+    const supabase = createClient()
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
+      if (!session) {
+        router.push('/login')
+      } else {
+        setUser(session.user)
+      }
+    })
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [router])
+
+  const handleLogout = async () => {
+    try {
+      await signOut()
+      router.push('/login')
+    } catch (error) {
+      console.error('Logout failed:', error)
+    }
+  }
+
+  // Show loading state while checking authentication
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="flex items-center space-x-2">
+          <Loader2 className="h-6 w-6 animate-spin" />
+          <span>Loading...</span>
+        </div>
+      </div>
+    )
+  }
+
+  // If no user after loading, return null (middleware will redirect)
+  if (!user) {
+    return null
   }
 
   return (
@@ -118,11 +181,17 @@ export default function DashboardLayout({
                 >
                   <Avatar className="h-8 w-8">
                     <AvatarImage src="/avatars/user.png" alt="User" />
-                    <AvatarFallback>ST</AvatarFallback>
+                    <AvatarFallback>
+                      {user?.email?.substring(0, 2).toUpperCase() || 'U'}
+                    </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 text-left">
-                    <p className="text-sm font-medium">Strategy Team</p>
-                    <p className="text-xs text-muted-foreground">team@company.com</p>
+                    <p className="text-sm font-medium">
+                      {user?.user_metadata?.full_name || 'User'}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {user?.email || 'user@example.com'}
+                    </p>
                   </div>
                 </Button>
               </DropdownMenuTrigger>
@@ -156,15 +225,21 @@ export default function DashboardLayout({
                 <Button variant="ghost" size="icon">
                   <Avatar className="h-8 w-8">
                     <AvatarImage src="/avatars/user.png" alt="User" />
-                    <AvatarFallback>ST</AvatarFallback>
+                    <AvatarFallback>
+                      {user?.email?.substring(0, 2).toUpperCase() || 'U'}
+                    </AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>
                   <div>
-                    <p className="text-sm font-medium">Strategy Team</p>
-                    <p className="text-xs text-muted-foreground">team@company.com</p>
+                    <p className="text-sm font-medium">
+                      {user?.user_metadata?.full_name || 'User'}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {user?.email || 'user@example.com'}
+                    </p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />

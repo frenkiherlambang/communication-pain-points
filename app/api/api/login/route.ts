@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { createServerClient } from "@supabase/ssr";
 import { LoginCredentials, AuthResponse } from "@/lib/supabase";
 
 /**
@@ -33,6 +33,32 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(response, { status: 400 });
     }
 
+    // Create response to set cookies
+    let response = NextResponse.next()
+    
+    // Create Supabase client with cookie support
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          get(name: string) {
+            return request.cookies.get(name)?.value;
+          },
+          set(name: string, value: string, options: any) {
+            request.cookies.set({ name, value, ...options });
+            response = NextResponse.next({ request: { headers: request.headers } });
+            response.cookies.set({ name, value, ...options });
+          },
+          remove(name: string, options: any) {
+            request.cookies.set({ name, value: '', ...options });
+            response = NextResponse.next({ request: { headers: request.headers } });
+            response.cookies.set({ name, value: '', ...options });
+          },
+        },
+      }
+    );
+
     // Attempt login dengan Supabase
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -61,14 +87,22 @@ export async function POST(request: NextRequest) {
     }
 
     // Login berhasil
-    const response: AuthResponse = {
+    const authResponse: AuthResponse = {
       success: true,
       message: "Login berhasil",
       user: data.user,
       session: data.session,
     };
 
-    return NextResponse.json(response, { status: 200 });
+    // Return response with cookies set
+    const jsonResponse = NextResponse.json(authResponse, { status: 200 });
+    
+    // Copy cookies from the response object
+    response.cookies.getAll().forEach(cookie => {
+      jsonResponse.cookies.set(cookie.name, cookie.value);
+    });
+    
+    return jsonResponse;
   } catch (error) {
     console.error("Server error:", error);
 

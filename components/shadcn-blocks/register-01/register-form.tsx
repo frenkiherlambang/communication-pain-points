@@ -58,7 +58,7 @@ export function RegisterForm({
               )}
               {success && (
                 <div className="p-3 text-sm text-green-600 bg-green-50 border border-green-200 rounded-md">
-                  Registrasi berhasil! Silakan cek email untuk konfirmasi akun.
+                  Registrasi berhasil! Silakan login untuk melanjutkan.
                 </div>
               )}
               <div className="grid gap-3">
